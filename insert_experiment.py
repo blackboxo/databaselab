@@ -70,7 +70,7 @@ def start_test_insert_and_record_result():
         result = insert_seperate(num=100)
         result_list.append(result)
 
-    output_file_name = "insert_result.json"
+    output_file_name = "experiment_insert.json"
     with open(output_file_name, "w") as f:
         json.dump(result_list, f)
 
