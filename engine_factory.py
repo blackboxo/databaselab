@@ -1,3 +1,4 @@
+# coding=utf-8
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 
@@ -5,6 +6,9 @@ metadata = MetaData()
 
 
 class EngineFactory:
+    """
+    这个类负责创建数据库的连接，session
+    """
     @staticmethod
     def create_engine_to_so_old(echo=True):
         engine = create_engine("mysql+pymysql://root:root@10.131.252.160/stackoverflow?charset=utf8", encoding='utf-8',
