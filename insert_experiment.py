@@ -65,9 +65,9 @@ def start_test_insert_and_record_result():
     max_test_num = 300
     result_list = []
     for num in range(10, max_test_num, 100):
-        result = insert_batch(num=100)
+        result = insert_batch(num=num)
         result_list.append(result)
-        result = insert_seperate(num=100)
+        result = insert_seperate(num=num)
         result_list.append(result)
 
     output_file_name = "experiment_insert.json"
