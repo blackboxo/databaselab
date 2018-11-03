@@ -61,14 +61,37 @@ def insert_seperate(num, clean=True):
     }
 
 
-def start_test_insert_and_record_result():
-    max_test_num = 300
+def start_test_insert_and_record_result(max_test_num=2000, iteration_num=3):
     result_list = []
-    for num in range(10, max_test_num, 100):
-        result = insert_batch(num=num)
-        result_list.append(result)
-        result = insert_seperate(num=num)
-        result_list.append(result)
+    for num in range(100, max_test_num, 100):
+
+        ## 测试批量的插入操作时间
+
+        ## 计算平均运行时间值
+        temp_result_list = []
+        sum_time = 0
+        for i in range(0, iteration_num):
+            result = insert_batch(num=num)
+            temp_result_list.append(result)
+            sum_time = sum_time + result["time"]
+        average_time = sum_time / iteration_num
+        average_result = temp_result_list[0]
+        average_result["time"] = average_time
+
+        result_list.append(average_result)
+
+        ## 测试非批量的插入操作时间
+
+        temp_result_list = []
+        sum_time = 0
+        for i in range(0, iteration_num):
+            result = insert_seperate(num=num)
+            temp_result_list.append(result)
+            sum_time = sum_time + result["time"]
+        average_time = sum_time / iteration_num
+        average_result = temp_result_list[0]
+        average_result["time"] = average_time
+        result_list.append(average_result)
 
     output_file_name = "experiment_insert.json"
     with open(output_file_name, "w") as f:
@@ -76,4 +99,4 @@ def start_test_insert_and_record_result():
 
 
 if __name__ == "__main__":
-    start_test_insert_and_record_result()
+    start_test_insert_and_record_result(max_test_num=200, iteration_num=3)
