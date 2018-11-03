@@ -11,7 +11,7 @@ from model import PostsRecord
 
 def insert_batch(num, clean=True, average_iteration_num=1):
     sum_time = 0.0
-    for i in range(1, average_iteration_num):
+    for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
 
         old_session = EngineFactory.create_session_to_so_old(echo=False)
@@ -41,7 +41,7 @@ def insert_batch(num, clean=True, average_iteration_num=1):
 
 def insert_seperate(num, clean=True, average_iteration_num=1):
     sum_time = 0.0
-    for i in range(1, average_iteration_num):
+    for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
 
         old_session = EngineFactory.create_session_to_so_old(echo=False)
