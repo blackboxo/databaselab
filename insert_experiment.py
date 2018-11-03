@@ -82,4 +82,4 @@ def start_test_insert_and_record_result(max_test_num=2000, iteration_num=3):
 
 
 if __name__ == "__main__":
-    start_test_insert_and_record_result(max_test_num=200, iteration_num=3)
+    start_test_insert_and_record_result(max_test_num=300, iteration_num=3)
