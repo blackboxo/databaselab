@@ -39,7 +39,7 @@ def insert_batch(num, clean=True, average_iteration_num=1):
     }
 
 
-def insert_seperate(num, clean=True, average_iteration_num=1):
+def insert_separate(num, clean=True, average_iteration_num=1):
     sum_time = 0.0
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
@@ -55,12 +55,12 @@ def insert_seperate(num, clean=True, average_iteration_num=1):
 
         endtime = datetime.datetime.now()
         time = (endtime - starttime).total_seconds()
-        print("test_insert_seperate num={num} time={time}".format(num=num, time=time))
+        print("test_insert_separate num={num} time={time}".format(num=num, time=time))
         if clean:
             PostsRecord.delete_all(new_session)
         sum_time=sum_time+time
     return {
-        "type": "insert seperate",
+        "type": "insert separate",
         "num": num,
         "time": sum_time / average_iteration_num
     }
@@ -76,7 +76,7 @@ def start_test_insert_and_record_result(max_test_num=2000, iteration_num=3):
         result_list.append(result)
 
         ## 测试非批量的插入操作时间
-        result = insert_seperate(num=num, average_iteration_num=3)
+        result = insert_separate(num=num, average_iteration_num=3)
         result_list.append(result)
 
     output_file_name = "experiment_insert.json"
