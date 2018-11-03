@@ -9,34 +9,36 @@ from engine_factory import EngineFactory
 from model import PostsRecord
 
 
-def insert_batch(num, clean=True):
-    starttime = datetime.datetime.now()
+def insert_batch(num, clean=True, average_iteration_num=1):
+    sum_time = 0
+    for i in range(1, average_iteration_num):
+        starttime = datetime.datetime.now()
 
-    old_session = EngineFactory.create_session_to_so_old(echo=False)
-    new_session = EngineFactory.create_session_to_new_so(echo=False)
+        old_session = EngineFactory.create_session_to_so_old(echo=False)
+        new_session = EngineFactory.create_session_to_new_so(echo=False)
 
-    old_post_list = old_session.query(PostsRecord).limit(num)
-    for post in old_post_list:
-        new_session.add(post.make_copy())
+        old_post_list = old_session.query(PostsRecord).limit(num)
+        for post in old_post_list:
+            new_session.add(post.make_copy())
 
-    ## 全部写入缓存再一次性commit写入数据库
+        ## 全部写入缓存再一次性commit写入数据库
 
-    new_session.commit()
+        new_session.commit()
 
-    endtime = datetime.datetime.now()
-    time = (endtime - starttime).total_seconds()
-    print("test_insert_batch num={num} time={time}".format(num=num, time=time))
-    if clean:
-        PostsRecord.delete_all(new_session)
+        endtime = datetime.datetime.now()
+        time = (endtime - starttime).total_seconds()
+        print("test_insert_batch num={num} time={time}".format(num=num, time=time))
+        if clean:
+            PostsRecord.delete_all(new_session)
 
     return {
         "type": "insert batch",
         "num": num,
-        "time": time
+        "time": sum_time / average_iteration_num
     }
 
 
-def insert_seperate(num, clean=True):
+def insert_seperate(num, clean=True, average_iteration_num=1):
     starttime = datetime.datetime.now()
 
     old_session = EngineFactory.create_session_to_so_old(echo=False)
@@ -64,34 +66,15 @@ def insert_seperate(num, clean=True):
 def start_test_insert_and_record_result(max_test_num=2000, iteration_num=3):
     result_list = []
     for num in range(100, max_test_num, 100):
-
         ## 测试批量的插入操作时间
 
         ## 计算平均运行时间值
-        temp_result_list = []
-        sum_time = 0
-        for i in range(0, iteration_num):
-            result = insert_batch(num=num)
-            temp_result_list.append(result)
-            sum_time = sum_time + result["time"]
-        average_time = sum_time / iteration_num
-        average_result = temp_result_list[0]
-        average_result["time"] = average_time
-
-        result_list.append(average_result)
+        result = insert_batch(num=num, average_iteration_num=3)
+        result_list.append(result)
 
         ## 测试非批量的插入操作时间
-
-        temp_result_list = []
-        sum_time = 0
-        for i in range(0, iteration_num):
-            result = insert_seperate(num=num)
-            temp_result_list.append(result)
-            sum_time = sum_time + result["time"]
-        average_time = sum_time / iteration_num
-        average_result = temp_result_list[0]
-        average_result["time"] = average_time
-        result_list.append(average_result)
+        result = insert_seperate(num=num, average_iteration_num=3)
+        result_list.append(result)
 
     output_file_name = "experiment_insert.json"
     with open(output_file_name, "w") as f:
