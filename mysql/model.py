@@ -81,3 +81,32 @@ class PostsRecord(Base):
     def delete_all(session):
         session.query(PostsRecord).delete()
         session.commit()
+
+class UsersRecord(Base):
+    __tablename__ = 'users'
+
+    id = Column(Integer, primary_key=True, autoincrement=True, name="Id")
+    reputation = Column(SmallInteger, name="Reputation")
+    creation_date = Column(Integer, name="CreationDate")
+    display_name = Column(Integer, name="DisplayName")
+    last_access_date = Column(Integer, name="LastAccessDate")
+    views = Column(Integer, name="Views")
+    web_site_url = Column(Text(), name="WebsiteUrl")
+    location = Column(Integer, name="Location")
+    about_me = Column(String(256), name="AboutMe")
+    age = Column(Integer, name="Age")
+    up_votes = Column(DateTime(), name="UpVotes")
+    down_votes = Column(DateTime(), name="DownVotes")
+    email_hash = Column(String(256), name="EmailHash")
+
+    __table_args__ = ({
+        "mysql_charset": "utf8",
+    })
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def delete_all(session):
+        session.query(UsersRecord).delete()
+        session.commit()
