@@ -90,7 +90,7 @@ class UsersRecord(Base):
     id = Column(Integer, primary_key=True, autoincrement=True, name="Id")
     reputation = Column(Integer, name="Reputation")
     creation_date = Column(DateTime(), name="CreationDate")
-    display_name = Column(String(50), name="DisplayName")
+    display_name = Column(String(256), name="DisplayName")
     last_access_date = Column(DateTime(), name="LastAccessDate")
     views = Column(Integer, name="Views")
     web_site_url = Column(String(256), name="WebsiteUrl")
@@ -99,7 +99,7 @@ class UsersRecord(Base):
     age = Column(Integer, name="Age")
     up_votes = Column(Integer, name="UpVotes")
     down_votes = Column(Integer, name="DownVotes")
-    email_hash = Column(String(32), name="EmailHash")
+    email_hash = Column(String(256), name="EmailHash")
 
     __table_args__ = ({
         "mysql_charset": "utf8",
