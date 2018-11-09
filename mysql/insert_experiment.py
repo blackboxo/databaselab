@@ -15,23 +15,23 @@ def insert_batch(num, clean=True, average_iteration_num=1):
 
         ## 接下来的三行代码从旧的总表中获取想要的数目的数据，作为之后插入的数据源，其实也可以读文件得到，但是那就太麻烦了
         old_session = EngineFactory.create_session_to_databackup_so(echo=False)
-        new_session = EngineFactory.create_session_to_test_so(echo=False)
+        test_session = EngineFactory.create_session_to_test_so(echo=False)
         old_post_list = old_session.query(PostsRecord).limit(num)
 
         starttime = datetime.datetime.now()
 
         for post in old_post_list:
-            new_session.add(post.make_copy())
+            test_session.add(post.make_copy())
 
         ## 全部写入缓存再一次性commit写入数据库
 
-        new_session.commit()
+        test_session.commit()
         endtime = datetime.datetime.now()
 
         time = (endtime - starttime).total_seconds()
         print("test_insert_batch num={num} time={time}".format(num=num, time=time))
         if clean:
-            PostsRecord.delete_all(new_session)
+            PostsRecord.delete_all(test_session)
         sum_time = sum_time + time
 
     return {
@@ -46,22 +46,22 @@ def insert_separate(num, clean=True, average_iteration_num=1):
     for i in range(0, average_iteration_num):
 
         old_session = EngineFactory.create_session_to_databackup_so(echo=False)
-        new_session = EngineFactory.create_session_to_test_so(echo=False)
+        test_session = EngineFactory.create_session_to_test_so(echo=False)
 
         old_post_list = old_session.query(PostsRecord).limit(num)
 
         starttime = datetime.datetime.now()
 
         for post in old_post_list:
-            new_session.add(post.make_copy())
+            test_session.add(post.make_copy())
             ## 每插入一条就commit写入数据库
-            new_session.commit()
+            test_session.commit()
 
         endtime = datetime.datetime.now()
         time = (endtime - starttime).total_seconds()
         print("test_insert_separate num={num} time={time}".format(num=num, time=time))
         if clean:
-            PostsRecord.delete_all(new_session)
+            PostsRecord.delete_all(test_session)
         sum_time = sum_time + time
     return {
         "type": "insert separate",

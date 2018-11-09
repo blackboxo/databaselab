@@ -95,7 +95,7 @@ class UsersRecord(Base):
     views = Column(Integer, name="Views")
     web_site_url = Column(String(256), name="WebsiteUrl")
     location = Column(String(256), name="Location")
-    about_me = Column(String(256), name="AboutMe")
+    about_me = Column(Text(), name="AboutMe")
     age = Column(Integer, name="Age")
     up_votes = Column(Integer, name="UpVotes")
     down_votes = Column(Integer, name="DownVotes")
