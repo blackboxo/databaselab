@@ -12,20 +12,22 @@ from model import PostsRecord
 def insert_batch(num, clean=True, average_iteration_num=1):
     sum_time = 0.0
     for i in range(0, average_iteration_num):
-        starttime = datetime.datetime.now()
 
+        ## 接下来的三行代码从旧的总表中获取想要的数目的数据，作为之后插入的数据源，其实也可以读文件得到，但是那就太麻烦了
         old_session = EngineFactory.create_session_to_so_old(echo=False)
         new_session = EngineFactory.create_session_to_new_so(echo=False)
-
         old_post_list = old_session.query(PostsRecord).limit(num)
+
+        starttime = datetime.datetime.now()
+
         for post in old_post_list:
             new_session.add(post.make_copy())
 
         ## 全部写入缓存再一次性commit写入数据库
 
         new_session.commit()
-
         endtime = datetime.datetime.now()
+
         time = (endtime - starttime).total_seconds()
         print("test_insert_batch num={num} time={time}".format(num=num, time=time))
         if clean:
@@ -42,12 +44,14 @@ def insert_batch(num, clean=True, average_iteration_num=1):
 def insert_separate(num, clean=True, average_iteration_num=1):
     sum_time = 0.0
     for i in range(0, average_iteration_num):
-        starttime = datetime.datetime.now()
 
         old_session = EngineFactory.create_session_to_so_old(echo=False)
         new_session = EngineFactory.create_session_to_new_so(echo=False)
 
         old_post_list = old_session.query(PostsRecord).limit(num)
+
+        starttime = datetime.datetime.now()
+
         for post in old_post_list:
             new_session.add(post.make_copy())
             ## 每插入一条就commit写入数据库
