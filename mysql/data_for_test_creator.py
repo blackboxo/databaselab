@@ -15,10 +15,13 @@ def create_post_test_data_in_test_db(num):
     old_session = EngineFactory.create_session_to_databackup_so(echo=False)
     new_session = EngineFactory.create_session_to_test_so(echo=False)
     old_post_list = old_session.query(PostsRecord).limit(num)
-
+    count = 0
     for post in old_post_list:
         new_session.add(post.make_copy())
-
+        count = count + 1
+        if count >= 100000:
+            new_session.commit()
+            count = 0
     new_session.commit()
 
 
@@ -33,8 +36,13 @@ def create_user_test_data_in_test_db(num):
     new_session = EngineFactory.create_session_to_test_so(echo=False)
     old_user_list = old_session.query(UsersRecord).limit(num)
 
+    count = 0
     for user in old_user_list:
         new_session.add(user.make_copy())
+        count = count + 1
+        if count >= 100000:
+            new_session.commit()
+            count = 0
 
     new_session.commit()
 
@@ -59,6 +67,8 @@ def delete_post_test_data_in_test_db():
     PostsRecord.delete_all(test_session)
 
 
-if __name__=="__main__":
-    # create_user_test_data_in_test_db(100000)
-    delete_user_test_data_in_test_db()
+if __name__ == "__main__":
+    create_post_test_data_in_test_db(1000000)
+    # delete_post_test_data_in_test_db()
+    create_user_test_data_in_test_db(1000000)
+    # delete_user_test_data_in_test_db()
