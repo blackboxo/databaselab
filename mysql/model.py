@@ -86,18 +86,18 @@ class UsersRecord(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True, autoincrement=True, name="Id")
-    reputation = Column(SmallInteger, name="Reputation")
-    creation_date = Column(Integer, name="CreationDate")
-    display_name = Column(Integer, name="DisplayName")
-    last_access_date = Column(Integer, name="LastAccessDate")
+    reputation = Column(Integer, name="Reputation")
+    creation_date = Column(DateTime(), name="CreationDate")
+    display_name = Column(String(50), name="DisplayName")
+    last_access_date = Column(DateTime(), name="LastAccessDate")
     views = Column(Integer, name="Views")
-    web_site_url = Column(Text(), name="WebsiteUrl")
-    location = Column(Integer, name="Location")
+    web_site_url = Column(String(256), name="WebsiteUrl")
+    location = Column(String(256), name="Location")
     about_me = Column(String(256), name="AboutMe")
     age = Column(Integer, name="Age")
-    up_votes = Column(DateTime(), name="UpVotes")
-    down_votes = Column(DateTime(), name="DownVotes")
-    email_hash = Column(String(256), name="EmailHash")
+    up_votes = Column(Integer, name="UpVotes")
+    down_votes = Column(Integer, name="DownVotes")
+    email_hash = Column(String(32), name="EmailHash")
 
     __table_args__ = ({
         "mysql_charset": "utf8",
@@ -110,3 +110,34 @@ class UsersRecord(Base):
     def delete_all(session):
         session.query(UsersRecord).delete()
         session.commit()
+
+    def make_copy(self):
+        user = UsersRecord()
+
+        user.id = self.id
+
+        user.reputation = self.reputation
+
+        user.creation_date = self.creation_date
+
+        user.display_name = self.display_name
+
+        user.last_access_date = self.last_access_date
+
+        user.views = self.views
+
+        user.web_site_url = self.web_site_url
+
+        user.location = self.location
+
+        user.about_me = self.about_me
+
+        user.age = self.age
+
+        user.up_votes = self.up_votes
+
+        user.down_votes = self.down_votes
+
+        user.email_hash = self.email_hash
+
+        return user
