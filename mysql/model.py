@@ -1,5 +1,7 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, SmallInteger
+from sqlalchemy import Column, Integer, String, Text, DateTime, SmallInteger, MetaData
 from sqlalchemy.ext.declarative import declarative_base
+
+from engine_factory import EngineFactory
 
 Base = declarative_base()
 
@@ -141,3 +143,9 @@ class UsersRecord(Base):
         user.email_hash = self.email_hash
 
         return user
+
+if __name__=="__main__":
+    engine = EngineFactory.create_engine_to_test_so()
+    metadata = MetaData(bind=engine)
+    # create all the table by model
+    Base.metadata.create_all(bind=engine)

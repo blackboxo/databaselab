@@ -15,7 +15,7 @@ def search_one_table_one_filter(num, clean=True, average_iteration_num=1):
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
 
-        session = EngineFactory.create_session_to_new_so(echo=False)
+        session = EngineFactory.create_session_to_test_so(echo=False)
         session.query(PostsRecord).limit(num).all()
         
         endtime = datetime.datetime.now()
@@ -37,7 +37,7 @@ def search_one_table_mul_filter(num, clean=True, average_iteration_num=1):
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
 
-        session = EngineFactory.create_session_to_new_so(echo=False)
+        session = EngineFactory.create_session_to_test_so(echo=False)
 
         session.query(PostsRecord).filter(PostsRecord.view_count > 1000).limit(num).all()
         
@@ -58,7 +58,7 @@ def search_multi_table(num, clean=True, average_iteration_num=1):
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
 
-        session = EngineFactory.create_session_to_new_so(echo=False)
+        session = EngineFactory.create_session_to_test_so(echo=False)
 
         session.query(PostsRecord.title, PostsRecord.tags, PostsRecord.favorite_count, UsersRecord.display_name, UsersRecord.reputation).filter(PostsRecord.owner_user_id == UsersRecord.id & UsersRecord.reputation > num).all()
         
@@ -79,7 +79,7 @@ def search_aggregate(num, clean=True, average_iteration_num=1):
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
 
-        session = EngineFactory.create_session_to_new_so(echo=False)
+        session = EngineFactory.create_session_to_test_so(echo=False)
 
         session.query(func.sum(PostsRecord.favorite_count), UsersRecord.display_name, UsersRecord.reputation).filter(PostsRecord.owner_user_id == UsersRecord.id & UsersRecord.reputation > num).all()
         

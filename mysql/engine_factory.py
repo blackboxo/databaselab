@@ -7,30 +7,30 @@ metadata = MetaData()
 
 class EngineFactory:
     """
-    这个类负责创建数据库的连接，session
+    这个类负责创建数据库的连接，stackoverflow的数据是作为数据备份的SO，testso是所有测试进行的SO
     """
     @staticmethod
-    def create_engine_to_so_old(echo=True):
+    def create_engine_to_databackup_so(echo=True):
         engine = create_engine("mysql+pymysql://root:root@10.131.252.160/stackoverflow?charset=utf8", encoding='utf-8',
                                echo=echo)
         return engine
 
     @staticmethod
-    def create_engine_to_so(echo=True):
-        engine = create_engine("mysql+pymysql://root:root@10.131.252.160/testso?charset=utf8", encoding='utf-8',
+    def create_engine_to_test_so(echo=True):
+        engine = create_engine("mysql+pymysql://root:root@10.141.221.87/test?charset=utf8", encoding='utf-8',
                                echo=echo)
         return engine
 
     @staticmethod
-    def create_session_to_new_so(autocommit=False, echo=True):
-        engine = EngineFactory.create_engine_to_so(echo=echo)
+    def create_session_to_test_so(autocommit=False, echo=True):
+        engine = EngineFactory.create_engine_to_test_so(echo=echo)
         Session = sessionmaker(bind=engine, autocommit=autocommit)
         session = Session()
         return session
 
     @staticmethod
-    def create_session_to_so_old(autocommit=False, echo=True):
-        engine = EngineFactory.create_engine_to_so_old(echo=echo)
+    def create_session_to_databackup_so(autocommit=False, echo=True):
+        engine = EngineFactory.create_engine_to_databackup_so(echo=echo)
         Session = sessionmaker(bind=engine, autocommit=autocommit)
         session = Session()
         return session

@@ -14,8 +14,8 @@ def insert_batch(num, clean=True, average_iteration_num=1):
     for i in range(0, average_iteration_num):
 
         ## 接下来的三行代码从旧的总表中获取想要的数目的数据，作为之后插入的数据源，其实也可以读文件得到，但是那就太麻烦了
-        old_session = EngineFactory.create_session_to_so_old(echo=False)
-        new_session = EngineFactory.create_session_to_new_so(echo=False)
+        old_session = EngineFactory.create_session_to_databackup_so(echo=False)
+        new_session = EngineFactory.create_session_to_test_so(echo=False)
         old_post_list = old_session.query(PostsRecord).limit(num)
 
         starttime = datetime.datetime.now()
@@ -45,8 +45,8 @@ def insert_separate(num, clean=True, average_iteration_num=1):
     sum_time = 0.0
     for i in range(0, average_iteration_num):
 
-        old_session = EngineFactory.create_session_to_so_old(echo=False)
-        new_session = EngineFactory.create_session_to_new_so(echo=False)
+        old_session = EngineFactory.create_session_to_databackup_so(echo=False)
+        new_session = EngineFactory.create_session_to_test_so(echo=False)
 
         old_post_list = old_session.query(PostsRecord).limit(num)
 
