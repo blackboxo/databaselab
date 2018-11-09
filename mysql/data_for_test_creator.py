@@ -60,4 +60,5 @@ def delete_post_test_data_in_test_db():
 
 
 if __name__=="__main__":
-    create_user_test_data_in_test_db(100000)
+    # create_user_test_data_in_test_db(100000)
+    delete_user_test_data_in_test_db()
