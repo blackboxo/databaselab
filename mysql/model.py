@@ -86,17 +86,17 @@ class UsersRecord(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True, autoincrement=True, name="Id")
-    reputation = Column(SmallInteger, name="Reputation")
-    creation_date = Column(Integer, name="CreationDate")
-    display_name = Column(Integer, name="DisplayName")
-    last_access_date = Column(Integer, name="LastAccessDate")
+    reputation = Column(Integer, name="Reputation")
+    creation_date = Column(DateTime(), name="CreationDate")
+    display_name = Column(String(256), name="DisplayName")
+    last_access_date = Column(DateTime(), name="LastAccessDate")
     views = Column(Integer, name="Views")
-    web_site_url = Column(Text(), name="WebsiteUrl")
-    location = Column(Integer, name="Location")
-    about_me = Column(String(256), name="AboutMe")
+    web_site_url = Column(String(256), name="WebsiteUrl")
+    location = Column(String(256), name="Location")
+    about_me = Column(Text(), name="AboutMe")
     age = Column(Integer, name="Age")
-    up_votes = Column(DateTime(), name="UpVotes")
-    down_votes = Column(DateTime(), name="DownVotes")
+    up_votes = Column(Integer, name="UpVotes")
+    down_votes = Column(Integer, name="DownVotes")
     email_hash = Column(String(256), name="EmailHash")
 
     __table_args__ = ({
