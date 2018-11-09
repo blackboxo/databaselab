@@ -1,5 +1,7 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, SmallInteger
+from sqlalchemy import Column, Integer, String, Text, DateTime, SmallInteger, MetaData
 from sqlalchemy.ext.declarative import declarative_base
+
+from engine_factory import EngineFactory
 
 Base = declarative_base()
 
@@ -110,3 +112,40 @@ class UsersRecord(Base):
     def delete_all(session):
         session.query(UsersRecord).delete()
         session.commit()
+
+    def make_copy(self):
+        user = UsersRecord()
+
+        user.id = self.id
+
+        user.reputation = self.reputation
+
+        user.creation_date = self.creation_date
+
+        user.display_name = self.display_name
+
+        user.last_access_date = self.last_access_date
+
+        user.views = self.views
+
+        user.web_site_url = self.web_site_url
+
+        user.location = self.location
+
+        user.about_me = self.about_me
+
+        user.age = self.age
+
+        user.up_votes = self.up_votes
+
+        user.down_votes = self.down_votes
+
+        user.email_hash = self.email_hash
+
+        return user
+
+if __name__=="__main__":
+    engine = EngineFactory.create_engine_to_test_so()
+    metadata = MetaData(bind=engine)
+    # create all the table by model
+    Base.metadata.create_all(bind=engine)
