@@ -8,6 +8,11 @@
     已经实现，实现脚本,insert_experiment.py
 2. 将post的数据批量插入数据库，比如一次插入10000条
     已经实现,实现脚本,insert_experiment.py
+### 删除
+1. 将post的数据逐条删除，比如总共删除10000条
 
+    已经实现，实现脚本,delete_experiment.py
+2. 将post的数据批量删除，比如一次删除10000条
+    已经实现,实现脚本,delete_experiment.py
 ### 其他实验
 todo，待补充
