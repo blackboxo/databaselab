@@ -1,8 +1,8 @@
 # coding=utf-8
 ## 这个文件负责创建测试数据
-from engine_factory import EngineFactory
+from mysql.util.engine_factory import EngineFactory
 
-from model import PostsRecord, UsersRecord
+from mysql.util.model import PostsRecord, UsersRecord
 
 
 def create_post_test_data_in_test_db(num):
