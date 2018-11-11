@@ -13,15 +13,15 @@
 INSERT INTO Posts
 1. mysql指定主键/mongodb指定_id 将Posts的数据插入一个新表中
 
-1.1 逐条插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_index_separate
+    1. 逐条插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_index_separate
 
-1.2 批量插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_index_batch
+    2. 批量插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_index_batch
 
 2. mysql不指定主键/mongodb不指定_id 将Posts的数据插入一个新表中
 
-2.1 逐条插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_separate
+    1. 逐条插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_separate
 
-2.2 批量插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_batch
+    2. 批量插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_batch
 
 
 ### 删除
