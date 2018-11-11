@@ -76,6 +76,45 @@ class PostsRecord(Base):
 
         return post
 
+    def make_copy_without_primary_key(self):
+        post = PostsRecord()
+
+        post.post_type_id = self.post_type_id
+
+        post.accepted_answer_id = self.accepted_answer_id
+
+        post.parent_id = self.parent_id
+
+        post.score = self.score
+
+        post.view_count = self.view_count
+
+        post.body = self.body
+
+        post.owner_user_id = self.owner_user_id
+
+        post.owner_display_name = self.owner_display_name
+
+        post.last_editor_user_id = self.last_editor_user_id
+
+        post.last_edit_date = self.last_edit_date
+
+        post.last_activity_date = self.last_activity_date
+
+        post.title = self.title
+
+        post.tags = self.tags
+
+        post.answer_count = self.answer_count
+
+        post.comment_count = self.comment_count
+
+        post.favorite_count = self.favorite_count
+
+        post.creation_date = self.creation_date
+
+        return post
+
     def __repr__(self):
         return '<POSTS: id=%r score=%r title=%r tags=%r>' % (self.id, self.score, self.title, self.tags)
 
@@ -83,6 +122,7 @@ class PostsRecord(Base):
     def delete_all(session):
         session.query(PostsRecord).delete()
         session.commit()
+
 
 class UsersRecord(Base):
     __tablename__ = 'users'
@@ -144,7 +184,37 @@ class UsersRecord(Base):
 
         return user
 
-if __name__=="__main__":
+    def make_copy_without_primary_key(self):
+        user = UsersRecord()
+
+        user.reputation = self.reputation
+
+        user.creation_date = self.creation_date
+
+        user.display_name = self.display_name
+
+        user.last_access_date = self.last_access_date
+
+        user.views = self.views
+
+        user.web_site_url = self.web_site_url
+
+        user.location = self.location
+
+        user.about_me = self.about_me
+
+        user.age = self.age
+
+        user.up_votes = self.up_votes
+
+        user.down_votes = self.down_votes
+
+        user.email_hash = self.email_hash
+
+        return user
+
+
+if __name__ == "__main__":
     engine = EngineFactory.create_engine_to_test_so()
     metadata = MetaData(bind=engine)
     # create all the table by model
