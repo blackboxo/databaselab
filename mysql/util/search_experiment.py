@@ -5,8 +5,8 @@
 import datetime
 import json
 
-from engine_factory import EngineFactory
-from model import PostsRecord, UsersRecord
+from mysql.util.engine_factory import EngineFactory
+from mysql.util.model import PostsRecord, UsersRecord
 from sqlalchemy.sql import func
 
 
