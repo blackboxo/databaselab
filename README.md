@@ -132,6 +132,8 @@ json文件格式为[{type,num,time},{type,num,time}]
 
 需要写一个总的执行程序，运行以后就可以将这四个文件都测试一遍。
 
+以下测试步骤均仅供参考，只要符合测试样例的要求，并且两个数据库的测试使用同样的逻辑，可以按照自己最方便的写法来测。
+
 a. match.py 原始表Users和Posts 各100万条，查询测试在该表上进行
 
 b. insert_delete.py 插入1/2和删除1/2一起测（写在同一个py文件中）。以插入1和删除1为例：
@@ -150,9 +152,9 @@ c. insert_delete.py 测插入3和4。以插入4为例：
 
 d. delete_filter.py 测删除3。
 
-（循环开始前）将Posts表复制得到三张表Posts_delete_1,Posts_delete_2,Posts_delete_3,为这三张表建立对应查询索引（ViewCount, Score）->
+（循环开始前）新建表Posts_temp,为这三建立对应查询索引（ViewCount, Score）->
 
-（在每个循环中）对表Posts_delete_（循环次数）的数据进行条件删除，并加入sumtime_delete_multi-filters ->
+（在每个循环中）将Posts的数据导入到Posts_delete -> 对表Posts_delete的数据进行条件删除，并加入sumtime_delete_multi-filters -> 执行还原：DELETE * FROM Posts_temp ->
 
 （循环3次后）获得time_delete_multi-filters并写入json文件
 
