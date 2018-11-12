@@ -11,41 +11,38 @@
 ### 插入
 
 INSERT INTO Posts
-1. mysql指定主键/mongodb指定_id 将Posts的数据插入一个新表中
 
-    1. 逐条插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_index_separate
+mysql指定主键/mongodb指定_id 将Posts的数据插入一个新表中
 
-    2. 批量插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_index_batch
+1 逐条插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_id_separate
 
-2. mysql不指定主键/mongodb不指定_id 将Posts的数据插入一个新表中
+2 批量插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_id_batch
 
-    1. 逐条插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_separate
+mysql不指定主键/mongodb不指定_id 将Posts的数据插入一个新表中
 
-    2. 批量插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_batch
+3 逐条插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_separate
+
+4 批量插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_batch
 
 
 ### 删除
 
-DELETE * FROM Posts LIMIT num (测10组：num从1万起递增1万，最后一组为10万)
-1. mysql指定主键/mongodb指定_id 将Posts的数据删除
+根据ID删除 DELETE * FROM Posts LIMIT num (测10组：num从1万起递增1万，最后一组为10万)
 
-1.1 逐条删除(测10组：从limit前1万起递增1万，最后一组前10万) delete_index_separate
+mysql指定主键/mongodb指定_id 将Posts的数据删除
 
-1.2 批量删除(测10组：从limit前1万起递增1万，最后一组前10万) delete_index_batch
+1 逐条删除(测10组：从limit前1万起递增1万，最后一组前10万) delete_id_separate
 
-2. mysql不指定主键/mongodb不指定_id 将Posts的数据删除
+2 批量删除(测10组：从limit前1万起递增1万，最后一组前10万) delete_id_batch
 
-2.1 逐条删除(测10组：从limit前1万起递增1万，最后一组前10万) delete_separate
 
-2.2 批量删除(测10组：从limit前1万起递增1万，最后一组前10万) delete_batch
+3.多条件删除 delete_multi-filters
 
-条件删除 删除浏览量小于某个值的所有帖子
+删除浏览量小于某个值且分数低于20分的所有帖子 
 
-DELETE * FROM Posts WHERE ViewCount<num (测10组：num从1万起递增1万，最后一组为10万)
+DELETE * FROM Posts WHERE ViewCount<num and Score<20 (测10组：num从1万起递增1万，最后一组为10万) 
 
-3. mysql指定主键/mongodb指定_id 批量删除 (测10组，值从1万起递增1万，最后一个为10万)  delete_index_filter
-
-4. mysql不指定主键/mongodb不指定_id 批量删除 (测10组，值从1万起递增1万，最后一个为10万) delete_filter
+额外索引建立: （ViewCount, Score）
 
 
 （在经过插入和删除的测试后，可以明显看到使用索引和批量操作使得数据库的性能更好，因此后续的查询和更新测试我们使用索引和批量测试）
@@ -62,9 +59,9 @@ SELECT * FROM Posts LIMIT num (测10组：num从1万起递增1万，最后一组
 
 查询某个用户点击量大于1000的所有帖子
 
-SELECT * FROM Posts WHERE OwnerUserId< num (测10组：num从1万起递增1万，最后一组为10万) and ViewCount >1000
+SELECT * FROM Posts WHERE ViewCount >1000 and OwnerUserId< num (测10组：num从1万起递增1万，最后一组为10万) 
 
-索引建立：(OwnerUserId, ViewCount) 
+额外索引建立: 无
 
 3.多表联合查询 match_multi-tables:
 
@@ -74,7 +71,7 @@ SELECT Posts. Title, Posts.Tags, Posts. FavoriteCount, Users. DisplayName, Users
 
 Users WHERE Users.Id = Posts. OwnerUserId and Users. Reputation>num (测10组：num从1万起递增1万，最后一组为10万)
 
-索引建立: Users (Id, Reputation)  Posts(OwnerUserId)外键？
+额外索引建立: 无
 
 4.聚合查询 match_aggregate：
 
@@ -82,18 +79,16 @@ Users WHERE Users.Id = Posts. OwnerUserId and Users. Reputation>num (测10组：
 
 SELECT SUM(Posts. FavoriteCount), Users. DisplayName, Users. Reputation  FROM Posts,Users WHERE Users.Id = Posts. OwnerUserId and Users.Id<num (测10组：num从1万起递增1万，最后一组为10万)
 
-索引建立: Posts(OwnerUserId)外键？
+额外索引建立: 无
 
 
 ### 更新
 
-1.单表单条件更新 update_1-table_1-filter：
+1. 单表单条件更新 update_1-table_1-filter：
 
 用户阅读了某条帖子后，给该条帖子的浏览量+1（如果浏览量为null则设置为1）
 
 UPDATE Posts SET ViewCount= ViewCount+1 WHERE Id<num (测10组：num从1万起递增1万，最后一组为10万)
-
-索引建立:主键
 
 2.单表多条件多值更新 update_1-table_multi-filters：
 
@@ -101,7 +96,7 @@ UPDATE Posts SET ViewCount= ViewCount+1 WHERE Id<num (测10组：num从1万起�
 
 UPDATE Posts SET ViewCount= ViewCount+1, FavoriteCount=FavoriteCount+1 WHERE Score >20 and ViewCount>num (测10组：num从1万起递增1万，最后一组为10万)
 
-索引建立: ？(Score, ViewCount) （ViewCount, Score）(ViewCount)
+额外索引建立: （ViewCount, Score）
 
 3.多表联查单表更新 update_multi-tables_1-update：
 
@@ -109,7 +104,7 @@ UPDATE Posts SET ViewCount= ViewCount+1, FavoriteCount=FavoriteCount+1 WHERE Sco
 
 UPDATE Users SET Reputation= Reputation+1 FROM Posts,Users WHERE Users.Id = Posts. OwnerUserId and Posts. ViewCount >num (测10组：num从1万起递增1万，最后一组为10万)
 
-索引建立:
+额外索引建立: 无
 
 4.多表联查多表更新 update_multi-tables_multi-updates：
 
@@ -117,7 +112,7 @@ UPDATE Users SET Reputation= Reputation+1 FROM Posts,Users WHERE Users.Id = Post
 
 UPDATE Posts,Users SET Posts.ViewCount= Posts.ViewCount+1, Users.Reputation= Users.Reputation+1 WHERE Users.Id = Posts. OwnerUserId and Posts. ViewCount >num (测10组：num从1万起递增1万，最后一组为10万)
 
-索引建立:
+额外索引建立: 无
 
 
 ## 测试Tips
@@ -131,7 +126,7 @@ UPDATE Posts,Users SET Posts.ViewCount= Posts.ViewCount+1, Users.Reputation= Use
 
 对于每个SQL语句通过explain来分析出建立什么样的索引最能提高效率。
 
-json文件格式为[{type,num,time}{type,num,time},]
+json文件格式为[{type,num,time},{type,num,time}]
 
 
 ## 测试步骤
@@ -141,26 +136,32 @@ json文件格式为[{type,num,time}{type,num,time},]
 
 a. match.py 原始表Users和Posts 各100万条，查询测试在该表上进行
 
-b. insert_delete.py 插入1/2和删除1/2一起测（写在同一个py文件中）。以插入1.1和删除1.1为例：
+b. insert_delete.py 插入1/2和删除1/2一起测（写在同一个py文件中）。以插入1和删除1为例：
 
-（循环开始前）新建表Posts_temp->为该表建Id索引->
+（循环开始前）新建表Posts_temp ->
 
-（在每个循环中）将Posts的前num条插入Posts_temp，并加入sumtime_insert_index_separate->将Posts_temp的前num条删除，并加入sumtime_delete_index_separate->
+（在每个循环中）将Posts的前num条逐条插入Posts_temp（令主键值等于原始表Id的值），并加入sumtime_insert_id_separate -> 将Posts_temp的前num条删除，并加入sumtime_delete_id_separate ->
 
-（循环3次后）获得time_insert_index_separate和time_delete_index_separate并分别写入json文件
+（循环3次后）获得time_insert_id_separate和time_id_separate并分别写入json文件
 
-c. delete_filter.py 测删除3和4。以删除3为例：
+c. insert_delete.py 测插入3和4。以插入4为例：
 
-（循环开始前）新建表Posts_temp->为该表建Id索引->
+（在每个循环中）将Posts的前num条批量插入Posts_temp（让数据库自动生成主键的值），并加入sumtime_insert_batch -> 执行还原：DELETE * FROM Posts_temp ->
 
-（在每个循环中）将Posts的前100万条？插入Posts_temp->对Posts_temp的进行条件删除，并加入sumtime_delete_index_filter->
+（循环3次后）获得time_insert_batch写入json文件
 
-（循环3次后）获得time_delete_index_filter并写入json文件
+d. delete_filter.py 测删除3。
 
-d. update.py 测更新。以更新2为例：
+（循环开始前）将Posts表复制得到三张表Posts_delete_1,Posts_delete_2,Posts_delete_3,为这三张表建立对应查询索引（ViewCount, Score）->
 
-（循环开始前）为Posts表建立对应查询索引（）
+（在每个循环中）对表Posts_delete_（循环次数）的数据进行条件删除，并加入sumtime_delete_multi-filters ->
 
-（在每个循环中）测UPDATE Posts SET ViewCount= ViewCount+1, FavoriteCount=FavoriteCount+1 WHERE Score >20 and ViewCount>num，并加入sumtime_update_1-table_multi-filters -> 还原表回更新前：UPDATE Posts SET ViewCount= ViewCount-1, FavoriteCount=FavoriteCount-1 WHERE Score >20 and ViewCount>num
+（循环3次后）获得time_delete_multi-filters并写入json文件
 
-（循环3次后）获得time_update_1-table_multi-filters并写入json文件，并删除Posts表对应查询索引（）
+e. update.py 测更新。以更新2为例：
+
+（循环开始前）为Posts表建立对应查询索引（ViewCount, Score）
+
+（在每个循环中）测UPDATE Posts SET ViewCount= ViewCount+1, FavoriteCount=FavoriteCount+1 WHERE Score >20 and ViewCount>num，并加入sumtime_update_1-table_multi-filters -> 还原表回更新前：UPDATE Posts SET ViewCount= ViewCount-1, FavoriteCount=FavoriteCount-1 WHERE Score >20 and ViewCount>num ->
+
+（循环3次后）获得time_update_1-table_multi-filters并写入json文件
