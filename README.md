@@ -14,15 +14,15 @@ INSERT INTO Posts
 
 mysql指定主键/mongodb指定_id 将Posts的数据插入一个新表中
 
-1 逐条插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_id_separate
+1.逐条插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_id_separate
 
-2 批量插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_id_batch
+2.批量插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_id_batch
 
 mysql不指定主键/mongodb不指定_id 将Posts的数据插入一个新表中
 
-3 逐条插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_separate
+3.逐条插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_separate
 
-4 批量插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_batch
+4.批量插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_batch
 
 
 ### 删除
@@ -31,18 +31,20 @@ mysql不指定主键/mongodb不指定_id 将Posts的数据插入一个新表中
 
 mysql指定主键/mongodb指定_id 将Posts的数据删除
 
-1 逐条删除 delete_id_separate
+1.逐条删除 delete_id_separate
 
-2 批量删除 delete_id_batch
+2.批量删除 delete_id_batch
 
 
-3.多条件删除 delete_multi-filters
+多条件删除 
 
 删除浏览量小于某个值且分数低于20分的所有帖子 
 
 DELETE * FROM Posts WHERE Score<20 and ViewCount<num (测10组：num从1万起递增1万，最后一组为10万) 
 
-额外索引建立: （ViewCount, Score）
+3.不建立额外索引 delete_multi-filters
+
+4.额外索引建立: （ViewCount, Score）delete_multi-filters_index
 
 
 （在经过插入和删除的测试后，可以明显看到使用索引和批量操作使得数据库的性能更好，因此后续的查询和更新测试我们使用索引和批量测试）
@@ -150,9 +152,9 @@ c. insert_delete.py 测插入3和4。以插入4为例：
 
 （循环3次后）获得time_insert_batch写入json文件
 
-d. delete_filter.py 测删除3。
+d. delete_filter.py 测删除3和4。以删除4为例：
 
-（循环开始前）新建表Posts_temp,为这三建立对应查询索引（ViewCount, Score）->
+（循环开始前）新建表Posts_temp,为该表建立对应查询索引（ViewCount, Score）->
 
 （在每个循环中）将Posts的数据导入到Posts_delete -> 对表Posts_delete的数据进行条件删除，并加入sumtime_delete_multi-filters -> 执行还原：DELETE * FROM Posts_temp ->
 
