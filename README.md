@@ -40,7 +40,7 @@ mysql指定主键/mongodb指定_id 将Posts的数据删除
 
 删除浏览量小于某个值且分数低于20分的所有帖子 
 
-DELETE * FROM Posts WHERE ViewCount<num and Score<20 (测10组：num从1万起递增1万，最后一组为10万) 
+DELETE * FROM Posts WHERE Score<20 and ViewCount<num (测10组：num从1万起递增1万，最后一组为10万) 
 
 额外索引建立: （ViewCount, Score）
 
@@ -84,7 +84,7 @@ SELECT SUM(Posts. FavoriteCount), Users. DisplayName, Users. Reputation  FROM Po
 
 ### 更新
 
-1. 单表单条件更新 update_1-table_1-filter：
+1.单表单条件更新 update_1-table_1-filter：
 
 用户阅读了某条帖子后，给该条帖子的浏览量+1（如果浏览量为null则设置为1）
 
