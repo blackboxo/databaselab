@@ -31,9 +31,9 @@ mysql不指定主键/mongodb不指定_id 将Posts的数据插入一个新表中
 
 mysql指定主键/mongodb指定_id 将Posts的数据删除
 
-1 逐条删除(测10组：从limit前1万起递增1万，最后一组前10万) delete_id_separate
+1 逐条删除 delete_id_separate
 
-2 批量删除(测10组：从limit前1万起递增1万，最后一组前10万) delete_id_batch
+2 批量删除 delete_id_batch
 
 
 3.多条件删除 delete_multi-filters
