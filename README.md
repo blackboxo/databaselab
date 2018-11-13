@@ -14,15 +14,15 @@ INSERT INTO Posts
 
 mysql指定主键/mongodb指定_id 将Posts的数据插入一个新表中
 
-1 逐条插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_id_separate
+1.逐条插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_id_separate
 
-2 批量插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_id_batch
+2.批量插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_id_batch
 
 mysql不指定主键/mongodb不指定_id 将Posts的数据插入一个新表中
 
-3 逐条插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_separate
+3.逐条插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_separate
 
-4 批量插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_batch
+4.批量插入(测10组：从limit前1万起递增1万，最后一组前10万) insert_batch
 
 
 ### 删除
@@ -31,18 +31,20 @@ mysql不指定主键/mongodb不指定_id 将Posts的数据插入一个新表中
 
 mysql指定主键/mongodb指定_id 将Posts的数据删除
 
-1 逐条删除(测10组：从limit前1万起递增1万，最后一组前10万) delete_id_separate
+1.逐条删除 delete_id_separate
 
-2 批量删除(测10组：从limit前1万起递增1万，最后一组前10万) delete_id_batch
+2.批量删除 delete_id_batch
 
 
-3.多条件删除 delete_multi-filters
+多条件删除 
 
 删除浏览量小于某个值且分数低于20分的所有帖子 
 
-DELETE * FROM Posts WHERE ViewCount<num and Score<20 (测10组：num从1万起递增1万，最后一组为10万) 
+DELETE * FROM Posts WHERE Score<20 and ViewCount<num (测10组：num从1万起递增1万，最后一组为10万) 
 
-额外索引建立: （ViewCount, Score）
+3.不建立额外索引 delete_multi-filters
+
+4.额外索引建立: （ViewCount, Score）delete_multi-filters_index
 
 
 （在经过插入和删除的测试后，可以明显看到使用索引和批量操作使得数据库的性能更好，因此后续的查询和更新测试我们使用索引和批量测试）
@@ -67,9 +69,7 @@ SELECT * FROM Posts WHERE ViewCount >1000 and OwnerUserId< num (测10组：num�
 
 查询用户声誉大于某个值的用户的信息以及其post的基本信息和被喜欢数（探寻用户的声誉和其帖子受欢迎程度的关系）
 
-SELECT Posts. Title, Posts.Tags, Posts. FavoriteCount, Users. DisplayName, Users. Reputation  FROM Posts,
-
-Users WHERE Users.Id = Posts. OwnerUserId and Users. Reputation>num (测10组：num从1万起递增1万，最后一组为10万)
+SELECT Posts. Title, Posts.Tags, Posts. FavoriteCount, Users. DisplayName, Users. Reputation  FROM Posts,Users WHERE Users.Id = Posts. OwnerUserId and Users. Reputation>num (测10组：num从1万起递增1万，最后一组为10万)
 
 额外索引建立: 无
 
@@ -84,7 +84,7 @@ SELECT SUM(Posts. FavoriteCount), Users. DisplayName, Users. Reputation  FROM Po
 
 ### 更新
 
-1. 单表单条件更新 update_1-table_1-filter：
+1.单表单条件更新 update_1-table_1-filter：
 
 用户阅读了某条帖子后，给该条帖子的浏览量+1（如果浏览量为null则设置为1）
 
@@ -134,6 +134,8 @@ json文件格式为[{type,num,time},{type,num,time}]
 
 需要写一个总的执行程序，运行以后就可以将这四个文件都测试一遍。
 
+以下测试步骤均仅供参考，只要符合测试样例的要求，并且两个数据库的测试使用同样的逻辑，可以按照自己最方便的写法来测。
+
 a. match.py 原始表Users和Posts 各100万条，查询测试在该表上进行
 
 b. insert_delete.py 插入1/2和删除1/2一起测（写在同一个py文件中）。以插入1和删除1为例：
@@ -150,11 +152,11 @@ c. insert_delete.py 测插入3和4。以插入4为例：
 
 （循环3次后）获得time_insert_batch写入json文件
 
-d. delete_filter.py 测删除3。
+d. delete_filter.py 测删除3和4。以删除4为例：
 
-（循环开始前）将Posts表复制得到三张表Posts_delete_1,Posts_delete_2,Posts_delete_3,为这三张表建立对应查询索引（ViewCount, Score）->
+（循环开始前）新建表Posts_temp,为该表建立对应查询索引（ViewCount, Score）->
 
-（在每个循环中）对表Posts_delete_（循环次数）的数据进行条件删除，并加入sumtime_delete_multi-filters ->
+（在每个循环中）将Posts的数据导入到Posts_delete -> 对表Posts_delete的数据进行条件删除，并加入sumtime_delete_multi-filters -> 执行还原：DELETE * FROM Posts_temp ->
 
 （循环3次后）获得time_delete_multi-filters并写入json文件
 
