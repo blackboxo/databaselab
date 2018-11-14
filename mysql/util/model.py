@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, SmallInteger, MetaData, Index
+# coding=utf-8
+from sqlalchemy import Column, Integer, String, Text, DateTime, SmallInteger, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 
 from mysql.util.engine_factory import EngineFactory
@@ -127,6 +128,10 @@ class PostsRecord(Base):
         session.query(PostsRecord).delete()
         session.commit()
 
+    @staticmethod
+    def delete_by_id(session, id):
+        session.query(PostsRecord).filter(PostsRecord.id == id).delete()
+
 
 class UsersRecord(Base):
     __tablename__ = 'users'
@@ -188,8 +193,6 @@ class UsersRecord(Base):
 
         return user
 
-
-if __name__ == "__main__":
     def make_copy_without_primary_key(self):
         user = UsersRecord()
 
