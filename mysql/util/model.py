@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, SmallInteger, MetaData
+from sqlalchemy import Column, Integer, String, Text, DateTime, SmallInteger, MetaData, Index
 from sqlalchemy.ext.declarative import declarative_base
 
 from mysql.util.engine_factory import EngineFactory
@@ -28,9 +28,12 @@ class PostsRecord(Base):
     favorite_count = Column(Integer, name="FavoriteCount")
     creation_date = Column(DateTime(), name="CreationDate")
 
-    __table_args__ = ({
-        "mysql_charset": "utf8",
-    })
+    __table_args__ = (
+        {
+            "mysql_charset": "utf8"
+        },
+        # Index('update_index', 'view_count', 'score')  #给view_count和score创建索引，索引名为update_index
+    )
 
     def __init__(self):
         pass
@@ -116,7 +119,8 @@ class PostsRecord(Base):
         return post
 
     def __repr__(self):
-        return '<POSTS: id=%r score=%r title=%r tags=%r>' % (self.id, self.score, self.title, self.tags)
+        return '<POSTS: id=%r score=%r title=%r tags=%r>' % (
+            self.id, self.score, self.title, self.tags)
 
     @staticmethod
     def delete_all(session):
@@ -184,6 +188,8 @@ class UsersRecord(Base):
 
         return user
 
+
+if __name__ == "__main__":
     def make_copy_without_primary_key(self):
         user = UsersRecord()
 
