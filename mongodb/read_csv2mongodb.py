@@ -14,7 +14,6 @@ from pymongo import InsertOne
 
 def read_csv2mongodb(filename,collectionName):
     mydb = CollectionFactory.create_client_and_db()
-    # filename = "test2.csv"
     mydb[collectionName].delete_many({})
     count = 0
     with open(filename, encoding='utf-8',errors="ignore") as fr:
@@ -28,9 +27,11 @@ def read_csv2mongodb(filename,collectionName):
     return count
 
 if __name__ == '__main__':
+    start = datetime.datetime.now()
     fileName = "posts.csv"
     collectionName = "posts"
     count = read_csv2mongodb(fileName,collectionName)
     print(count)
+
 
 
