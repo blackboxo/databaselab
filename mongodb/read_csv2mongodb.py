@@ -17,7 +17,7 @@ def read_csv2mongodb(filename,collectionName):
     # filename = "test2.csv"
     mydb[collectionName].delete_many({})
     count = 0
-    with open(filename, encoding='utf-8') as fr:
+    with open(filename, encoding='utf-8',errors="ignore") as fr:
         rows = csv.DictReader(fr)
         post_list = []
         # print(type(rows))
@@ -28,8 +28,8 @@ def read_csv2mongodb(filename,collectionName):
     return count
 
 if __name__ == '__main__':
-    fileName = "‪test2.csv"
-    collectionName = "test_posts"
+    fileName = "posts.csv"
+    collectionName = "posts"
     count = read_csv2mongodb(fileName,collectionName)
     print(count)
 
