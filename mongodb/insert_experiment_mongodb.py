@@ -12,9 +12,13 @@ from pymongo import InsertOne
 from data_factory import Datafactory
 from pymongo.errors import BulkWriteError
 
-def insert_batch(num, average_iteration_num=1):
-    mydb = CollectionFactory.create_client_and_db()
-    tags_list = Datafactory.create_tags(num)
+def insert_batch(num,mydb,average_iteration_num=1,tags_id=False):
+    # mydb = CollectionFactory.create_client_and_db()
+    if tags_id==True:
+        tags_list = Datafactory.create_tags_id(num)
+    else:
+        tags_list = Datafactory.create_tags(num)
+
     sum_time = 0.0
     for iter in range(average_iteration_num):
         mydb["test_tags"].delete_many({})
@@ -26,20 +30,24 @@ def insert_batch(num, average_iteration_num=1):
 
         endtime = datetime.datetime.now()
         sum_time += (endtime - starttime).total_seconds()
-
+    type = "insert batch _id" if tags_id else "insert batch id"
     return {
-        "type": "insert batch",
+        "type": type,
         "num": num,
         "time": sum_time/average_iteration_num
     }
 
-def insert_separate(num,average_iteration_num=1):
+def insert_separate(num,mydb,average_iteration_num=1,tags_id=False):
 
-    mydb = CollectionFactory.create_client_and_db()
+    # mydb = CollectionFactory.create_client_and_db(db_name,client_name)
     sum_time = 0.0
-    tags_list = Datafactory.create_tags(num)
+    if tags_id==True:
+        tags_list = Datafactory.create_tags_id(num)
+    else:
+        tags_list = Datafactory.create_tags(num)
 
     for i in range(average_iteration_num):
+        # 先删除所有的数据
         mydb["test_tags"].delete_many({})
         starttime = datetime.datetime.now()
         # 逐条写
@@ -49,36 +57,55 @@ def insert_separate(num,average_iteration_num=1):
             mydb['test_tags'].insert_one(tags)
         endtime = datetime.datetime.now()
         sum_time = (endtime - starttime).total_seconds()
-
+    type = "insert separate _id" if tags_id else "insert separate id"
     return {
-        "type": "insert separate",
+        "type": type,
         "num": num,
         "time": sum_time/average_iteration_num
     }
 
-def start_test_insert_exp(num_list,iteration_num=3):
+
+def start_test_insert_exp(num_list,mydb,iteration_num=3):
     result_list = []
 
     for num in num_list:
-        ## 计算平均运行时间值
-        result = insert_batch(num,iteration_num)
+        ## 计算平均运行时间值，无索引
+        result = insert_batch(num,mydb,iteration_num)
         result_list.append(result)
 
     for num in num_list:
-        ## 测试非批量的插入操作时间
-        result = insert_separate(num,iteration_num)
+        ## 计算平均运行时间值
+        result = insert_batch(num,mydb,iteration_num,True)
         result_list.append(result)
 
-    filename = "experiment_mongodb_result.json"
+    for num in num_list:
+        ## 测试非批量的插入操作时间,无索引
+        result = insert_separate(num,mydb,iteration_num)
+        result_list.append(result)
+
+    for num in num_list:
+        ## 测试非批量的插入操作时间,_id
+        result = insert_separate(num,mydb,iteration_num,True)
+        result_list.append(result)
+
+
+    filename = "experiment_mongodb_result_insert.json"
     save(filename,result_list)
 
 def save(filename, result_list):
     with open(filename, "w") as f:
         json.dump(result_list, f)
 
+def demo():
+    mydb = CollectionFactory.create_client_and_db()
+    num_list = [5000, 10000]
+    # 传入数据量，数据库，测试次数
+    start_test_insert_exp(num_list, mydb, 3)
 
 if __name__ == '__main__':
-    num_list = [5000,10000,25000,50000]
-    start_test_insert_exp(num_list,3)
+    mydb = CollectionFactory.create_client_and_db()
+    num_list = [5000,10000]
+    # 传入数据量，数据库，测试次数
+    start_test_insert_exp(num_list,mydb,3)
 
 
