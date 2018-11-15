@@ -21,10 +21,10 @@ def insert_batch(num,mydb,average_iteration_num=1,tags_id=False):
 
     sum_time = 0.0
     for iter in range(average_iteration_num):
-        mydb["test_tags"].delete_many({})
+        mydb["testInsretTags"].delete_many({})
         starttime = datetime.datetime.now()
         try:
-            mydb["test_tags"].bulk_write(list(map(InsertOne,tags_list)))
+            mydb["testInsretTags"].bulk_write(list(map(InsertOne,tags_list)))
         except BulkWriteError as bwe:
             print(bwe.details)
 
@@ -48,13 +48,13 @@ def insert_separate(num,mydb,average_iteration_num=1,tags_id=False):
 
     for i in range(average_iteration_num):
         # 先删除所有的数据
-        mydb["test_tags"].delete_many({})
+        mydb["testInsretTags"].delete_many({})
         starttime = datetime.datetime.now()
         # 逐条写
         for tags in tags_list:
             # 不存在会新建一个数据库表
             # 插入测试的时候目前没有用post或者tags，之后自己修改
-            mydb['test_tags'].insert_one(tags)
+            mydb['testInsretTags'].insert_one(tags)
         endtime = datetime.datetime.now()
         sum_time = (endtime - starttime).total_seconds()
     type = "insert separate _id" if tags_id else "insert separate id"
@@ -98,14 +98,11 @@ def save(filename, result_list):
 
 def demo():
     mydb = CollectionFactory.create_client_and_db()
-    num_list = [5000, 10000]
+    num_list = [100000]
     # 传入数据量，数据库，测试次数
     start_test_insert_exp(num_list, mydb, 3)
 
 if __name__ == '__main__':
-    mydb = CollectionFactory.create_client_and_db()
-    num_list = [5000,10000]
-    # 传入数据量，数据库，测试次数
-    start_test_insert_exp(num_list,mydb,3)
+    demo()
 
 
