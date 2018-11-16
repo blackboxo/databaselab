@@ -104,7 +104,7 @@ def search_aggregate(num, average_iteration_num=1):
                 PostsRecord.owner_user_id == UsersRecord.id,
                 UsersRecord.id < num).group_by(UsersRecord.id).all()
         if len(res) > 0:
-            print("search_aggregate_result:", len(res), ":", res[0])
+            print("search_aggregate_result:", len(res), ":", res[0],res[1])
         else:
             print("search_aggregate_result: null")
 
@@ -120,10 +120,10 @@ def search_aggregate(num, average_iteration_num=1):
     }
 
 
-def start_test_search_and_record_result(start_test_num=100,
-                                        max_test_num=200,
+def start_test_search_and_record_result(start_test_num=1000,
+                                        max_test_num=2000,
                                         iteration_num=1,
-                                        step=100):
+                                        step=1000):
     result_list = []
     for num in range(start_test_num, max_test_num, step):
 
