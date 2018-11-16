@@ -2,7 +2,7 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, SmallInteger, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 
-from mysql.util.engine_factory import EngineFactory
+from engine_factory import EngineFactory
 
 Base = declarative_base()
 
