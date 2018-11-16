@@ -43,8 +43,8 @@ def search_one_table_mul_filter(num, average_iteration_num=1):
         session = EngineFactory.create_session_to_test_so(echo=False)
 
         res = session.query(PostsRecord).filter(
-            PostsRecord.owner_user_id < num,
-            PostsRecord.view_count > 1000).all()
+            PostsRecord.view_count > 1000,
+            PostsRecord.owner_user_id < num).all()
         if len(res) > 0:
             print("search_one_table_mul_filter_result:", len(res), ":", res[0])
         else:
@@ -101,8 +101,8 @@ def search_aggregate(num, average_iteration_num=1):
         res = session.query(
             func.sum(PostsRecord.favorite_count), UsersRecord.display_name,
             UsersRecord.reputation).filter(
-                UsersRecord.id < num,
-                PostsRecord.owner_user_id == UsersRecord.id).all()
+                PostsRecord.owner_user_id == UsersRecord.id,
+                UsersRecord.id < num).all()
         if len(res) > 0:
             print("search_aggregate_result:", len(res), ":", res[0])
         else:
@@ -127,20 +127,20 @@ def start_test_search_and_record_result(start_test_num=10000,
     result_list = []
     for num in range(start_test_num, max_test_num, step):
 
-        ## 测试单表单条件查询平均运行时间值
-        result = search_one_table_one_filter(
-            num=num, average_iteration_num=iteration_num)
-        result_list.append(result)
+        # ## 测试单表单条件查询平均运行时间值
+        # result = search_one_table_one_filter(
+        #     num=num, average_iteration_num=iteration_num)
+        # result_list.append(result)
 
-        ## 测试单表多条件查询平均运行时间值
-        result = search_one_table_mul_filter(
-            num=num, average_iteration_num=iteration_num)
-        result_list.append(result)
+        # ## 测试单表多条件查询平均运行时间值
+        # result = search_one_table_mul_filter(
+        #     num=num, average_iteration_num=iteration_num)
+        # result_list.append(result)
 
-        ## 测试多表联合查询平均运行时间值
-        result = search_multi_table(
-            num=num, average_iteration_num=iteration_num)
-        result_list.append(result)
+        # ## 测试多表联合查询平均运行时间值
+        # result = search_multi_table(
+        #     num=num, average_iteration_num=iteration_num)
+        # result_list.append(result)
 
         ## 测试聚合查询平均运行时间值
         result = search_aggregate(num=num, average_iteration_num=iteration_num)
