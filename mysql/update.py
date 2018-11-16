@@ -16,7 +16,7 @@ def update_one_table_one_filter(num, average_iteration_num=1):
         starttime = datetime.datetime.now()
 
         session = EngineFactory.create_session_to_test_so(echo=False)
-        res = session.query(PostsRecord).limit(num).update({
+        res = session.query(PostsRecord).filter(PostsRecord.id < num).update({
             'view_count':
             PostsRecord.view_count + 1
         })
@@ -34,7 +34,7 @@ def update_one_table_one_filter(num, average_iteration_num=1):
 
     for i in range(0, average_iteration_num):
         session = EngineFactory.create_session_to_test_so(echo=False)
-        res = session.query(PostsRecord).limit(num).update({
+        res = session.query(PostsRecord).filter(PostsRecord.id < num).update({
             'view_count':
             PostsRecord.view_count - 1
         })
