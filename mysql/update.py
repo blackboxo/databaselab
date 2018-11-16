@@ -204,9 +204,9 @@ def update_aggregate(num, average_iteration_num=1):
     }
 
 
-def start_test_update_and_record_result(start_test_num=10000,
-                                        max_test_num=30000,
-                                        iteration_num=1,
+def start_test_update_and_record_result((start_test_num=10000,
+                                        max_test_num=100000,
+                                        iteration_num=3,
                                         step=10000):
     result_list = []
     for num in range(start_test_num, max_test_num, step):
