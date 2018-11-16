@@ -127,20 +127,20 @@ def start_test_search_and_record_result(start_test_num=1000,
     result_list = []
     for num in range(start_test_num, max_test_num, step):
 
-        # ## 测试单表单条件查询平均运行时间值
-        # result = search_one_table_one_filter(
-        #     num=num, average_iteration_num=iteration_num)
-        # result_list.append(result)
+        ## 测试单表单条件查询平均运行时间值
+        result = search_one_table_one_filter(
+            num=num, average_iteration_num=iteration_num)
+        result_list.append(result)
 
-        # ## 测试单表多条件查询平均运行时间值
-        # result = search_one_table_mul_filter(
-        #     num=num, average_iteration_num=iteration_num)
-        # result_list.append(result)
+        ## 测试单表多条件查询平均运行时间值
+        result = search_one_table_mul_filter(
+            num=num, average_iteration_num=iteration_num)
+        result_list.append(result)
 
-        # ## 测试多表联合查询平均运行时间值
-        # result = search_multi_table(
-        #     num=num, average_iteration_num=iteration_num)
-        # result_list.append(result)
+        ## 测试多表联合查询平均运行时间值
+        result = search_multi_table(
+            num=num, average_iteration_num=iteration_num)
+        result_list.append(result)
 
         ## 测试聚合查询平均运行时间值
         result = search_aggregate(num=num, average_iteration_num=iteration_num)
