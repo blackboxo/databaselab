@@ -188,7 +188,7 @@ def update_aggregate(num, average_iteration_num=1):
         #     })
         # session.commit()
         conn = session.connect()
-    sql = 'UPDATE UsersRecord,PostsRecord INNER JOIN PostsRecord ON UsersRecord.id = PostsRecord.owner_user_id SET UsersRecord.reputation = UsersRecord.reputation - 1,PostsRecord.view_count = PostsRecord.view_count-1 WHERE PostsRecord.view_count > {num}'.format(
+        sql = 'UPDATE UsersRecord,PostsRecord INNER JOIN PostsRecord ON UsersRecord.id = PostsRecord.owner_user_id SET UsersRecord.reputation = UsersRecord.reputation - 1,PostsRecord.view_count = PostsRecord.view_count-1 WHERE PostsRecord.view_count > {num}'.format(
             num=num)
         s = text(sql)
         res = conn.execute(s)
