@@ -10,7 +10,7 @@ from util.model import PostsRecord, UsersRecord
 from sqlalchemy.sql import func
 
 
-def search_one_table_one_filter(num, average_iteration_num=1, session):
+def search_one_table_one_filter(num, average_iteration_num, session):
     sum_time = 0.0
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
@@ -34,7 +34,7 @@ def search_one_table_one_filter(num, average_iteration_num=1, session):
     }
 
 
-def search_one_table_mul_filter(num, average_iteration_num=1, session):
+def search_one_table_mul_filter(num, average_iteration_num, session):
     sum_time = 0.0
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
@@ -61,7 +61,7 @@ def search_one_table_mul_filter(num, average_iteration_num=1, session):
     }
 
 
-def search_multi_table(num, average_iteration_num=1, session):
+def search_multi_table(num, average_iteration_num, session):
     sum_time = 0.0
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
@@ -90,7 +90,7 @@ def search_multi_table(num, average_iteration_num=1, session):
     }
 
 
-def search_aggregate(num, average_iteration_num=1, session):
+def search_aggregate(num, average_iteration_num, session):
     sum_time = 0.0
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
@@ -129,22 +129,22 @@ def start_test_search_and_record_result(start_test_num=10000,
 
         ## 测试单表单条件查询平均运行时间值
         result = search_one_table_one_filter(
-            num=num, average_iteration_num=iteration_num, session)
+            num=num, average_iteration_num=iteration_num, session=session)
         result_list.append(result)
 
         ## 测试单表多条件查询平均运行时间值
         result = search_one_table_mul_filter(
-            num=num, average_iteration_num=iteration_num, session)
+            num=num, average_iteration_num=iteration_num, session=session)
         result_list.append(result)
 
         ## 测试多表联合查询平均运行时间值
         result = search_multi_table(
-            num=num, average_iteration_num=iteration_num, session)
+            num=num, average_iteration_num=iteration_num, session=session)
         result_list.append(result)
 
         ## 测试聚合查询平均运行时间值
         result = search_aggregate(
-            num=num, average_iteration_num=iteration_num, session)
+            num=num, average_iteration_num=iteration_num, session=session)
         result_list.append(result)
 
     output_file_name = "experiment_search.json"
