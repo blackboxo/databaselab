@@ -17,7 +17,40 @@
     输入需测试的次数，取平均时间
     已经实现，实现脚本,delete_experiment_factory:
 
+### 查询
 
+1.单表单条件查询 match_1-table_1-filter：
+
+根据帖子的id查询某个帖子的信息
+
+SELECT * FROM Posts LIMIT num (测10组：num从1万起递增1万，最后一组为10万)
+
+
+2.单表多条件查询 match_1-table_multi-filters：
+
+查询某个用户点击量大于1000的所有帖子
+
+SELECT * FROM Posts WHERE ViewCount >1000 and OwnerUserId< num (测10组：num从1万起递增1万，最后一组为10万) 
+
+额外索引建立: 无
+
+
+3.多表联合查询 match_multi-tables:
+
+查询用户声誉大于某个值的用户的信息以及其post的基本信息和被喜欢数（探寻用户的声誉和其帖子受欢迎程度的关系）
+
+SELECT Posts. Title, Posts.Tags, Posts. FavoriteCount, Users. DisplayName, Users. Reputation  FROM Posts,Users WHERE Users.Id = Posts. OwnerUserId and Users. Reputation>num (测10组：num从1万起递增1万，最后一组为10万)
+
+额外索引建立: 无
+
+
+4.聚合查询 match_aggregate：
+
+查询某个用户所有帖子的总被喜欢数：
+
+SELECT SUM(Posts. FavoriteCount), Users. DisplayName, Users. Reputation  FROM Posts,Users WHERE Users.Id = Posts. OwnerUserId and Users.Id<num (测10组：num从1万起递增1万，最后一组为10万)
+
+额外索引建立: 无
 
 ## 功能简介
 1. collection_factory:
