@@ -10,12 +10,11 @@ from util.model import PostsRecord, UsersRecord
 from sqlalchemy.sql import func
 
 
-def search_one_table_one_filter(num, average_iteration_num=1):
+def search_one_table_one_filter(num, average_iteration_num=1, session):
     sum_time = 0.0
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
 
-        session = EngineFactory.create_session_to_test_so(echo=False)
         res = session.query(PostsRecord).limit(num).all()
         if len(res) > 0:
             print("search_one_table_one_filter_result:", len(res), ":", res[0])
@@ -35,7 +34,7 @@ def search_one_table_one_filter(num, average_iteration_num=1):
     }
 
 
-def search_one_table_mul_filter(num, average_iteration_num=1):
+def search_one_table_mul_filter(num, average_iteration_num=1, session):
     sum_time = 0.0
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
@@ -62,7 +61,7 @@ def search_one_table_mul_filter(num, average_iteration_num=1):
     }
 
 
-def search_multi_table(num, average_iteration_num=1):
+def search_multi_table(num, average_iteration_num=1, session):
     sum_time = 0.0
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
@@ -91,7 +90,7 @@ def search_multi_table(num, average_iteration_num=1):
     }
 
 
-def search_aggregate(num, average_iteration_num=1):
+def search_aggregate(num, average_iteration_num=1, session):
     sum_time = 0.0
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
@@ -104,7 +103,7 @@ def search_aggregate(num, average_iteration_num=1):
                 PostsRecord.owner_user_id == UsersRecord.id,
                 UsersRecord.id < num).group_by(UsersRecord.id).all()
         if len(res) > 0:
-            print("search_aggregate_result:", len(res), ":", res[0],res[1])
+            print("search_aggregate_result:", len(res), ":", res[0], res[1])
         else:
             print("search_aggregate_result: null")
 
@@ -125,25 +124,27 @@ def start_test_search_and_record_result(start_test_num=10000,
                                         iteration_num=3,
                                         step=10000):
     result_list = []
+    session = EngineFactory.create_session_to_test_so(echo=False)
     for num in range(start_test_num, max_test_num, step):
 
         ## 测试单表单条件查询平均运行时间值
         result = search_one_table_one_filter(
-            num=num, average_iteration_num=iteration_num)
+            num=num, average_iteration_num=iteration_num, session)
         result_list.append(result)
 
         ## 测试单表多条件查询平均运行时间值
         result = search_one_table_mul_filter(
-            num=num, average_iteration_num=iteration_num)
+            num=num, average_iteration_num=iteration_num, session)
         result_list.append(result)
 
         ## 测试多表联合查询平均运行时间值
         result = search_multi_table(
-            num=num, average_iteration_num=iteration_num)
+            num=num, average_iteration_num=iteration_num, session)
         result_list.append(result)
 
         ## 测试聚合查询平均运行时间值
-        result = search_aggregate(num=num, average_iteration_num=iteration_num)
+        result = search_aggregate(
+            num=num, average_iteration_num=iteration_num, session)
         result_list.append(result)
 
     output_file_name = "experiment_search.json"
