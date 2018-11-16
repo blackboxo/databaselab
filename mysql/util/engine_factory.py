@@ -17,8 +17,8 @@ class EngineFactory:
 
     @staticmethod
     def create_engine_to_test_so(echo=True):
-        #engine = create_engine("mysql+pymysql://root:Root2018!@39.108.182.236/stackoverflow?charset=utf8", encoding='utf-8',echo=echo)
-        engine = create_engine("mysql+pymysql://root:root@10.141.221.87/test?charset=utf8", encoding='utf-8',echo=echo)
+        engine = create_engine("mysql+pymysql://root:Root2018!@39.108.182.236/stackoverflow?charset=utf8", encoding='utf-8',echo=echo)
+        #engine = create_engine("mysql+pymysql://root:root@10.141.221.87/test?charset=utf8", encoding='utf-8',echo=echo)
         return engine
 
     @staticmethod
