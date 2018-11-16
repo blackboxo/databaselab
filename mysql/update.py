@@ -109,7 +109,7 @@ def update_multi_table(num, average_iteration_num=1):
         #         UsersRecord.reputation + 1
         #     })
         conn = session.connect()
-        sql = 'UPDATE UsersRecord INNER JOIN PostsRecord ON UsersRecord.id = PostsRecord.owner_user_id SET UsersRecord.reputation = UsersRecord.reputation+1 WHERE PostsRecord.view_count > {num}'.format(
+        sql = 'UPDATE users INNER JOIN posts ON users.id = posts.OwnerUserId SET users.reputation = users.Reputation + 1 WHERE posts.ViewCount  > {num}'.format(
             num=num)
         s = text(sql)
         res = conn.execute(s)
@@ -132,7 +132,7 @@ def update_multi_table(num, average_iteration_num=1):
         #     })
         # session.commit()
         conn = session.connect()
-        sql = 'UPDATE UsersRecord INNER JOIN PostsRecord ON UsersRecord.id = PostsRecord.owner_user_id SET UsersRecord.reputation = UsersRecord.reputation-1 WHERE PostsRecord.view_count > {num}'.format(
+        sql = 'UPDATE users INNER JOIN posts ON users.id = posts.OwnerUserId SET users.reputation = users.Reputation - 1 WHERE posts.ViewCount  > {num}'.format(
             num=num)
         s = text(sql)
         res = conn.execute(s)
@@ -162,7 +162,7 @@ def update_aggregate(num, average_iteration_num=1):
         #     })
         # session.commit()
         conn = session.connect()
-        sql = 'UPDATE UsersRecord,PostsRecord INNER JOIN PostsRecord ON UsersRecord.id = PostsRecord.owner_user_id SET UsersRecord.reputation = UsersRecord.reputation + 1,PostsRecord.view_count = PostsRecord.view_count+1 WHERE PostsRecord.view_count > {num}'.format(
+        sql = 'UPDATE users,posts INNER JOIN posts ON users.id = posts.OwnerUserId SET users.reputation = users.Reputation + 1,posts.ViewCount = posts.ViewCount+1 WHERE posts.ViewCount > {num}'.format(
             num=num)
         s = text(sql)
         res = conn.execute(s)
@@ -188,7 +188,7 @@ def update_aggregate(num, average_iteration_num=1):
         #     })
         # session.commit()
         conn = session.connect()
-        sql = 'UPDATE UsersRecord,PostsRecord INNER JOIN PostsRecord ON UsersRecord.id = PostsRecord.owner_user_id SET UsersRecord.reputation = UsersRecord.reputation - 1,PostsRecord.view_count = PostsRecord.view_count-1 WHERE PostsRecord.view_count > {num}'.format(
+        sql = 'UPDATE users,posts INNER JOIN posts ON users.id = posts.OwnerUserId SET users.reputation = users.Reputation - 1,posts.ViewCount = posts.ViewCount-1 WHERE posts.ViewCount > {num}'.format(
             num=num)
         s = text(sql)
         res = conn.execute(s)
