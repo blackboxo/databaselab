@@ -5,8 +5,8 @@
 import datetime
 import json
 
-from mysql.util.engine_factory import EngineFactory
-from mysql.util.model import PostsRecord
+from engine_factory import EngineFactory
+from model import PostsRecord
 
 
 def insert_batch(num, clean=True, average_iteration_num=1):

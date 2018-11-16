@@ -2,8 +2,8 @@ import traceback
 
 from sqlalchemy import text
 
-from mysql.util.engine_factory import EngineFactory
-from mysql.util.model import PostsRecord
+from engine_factory import EngineFactory
+from model import PostsRecord
 
 
 def add_score_index():

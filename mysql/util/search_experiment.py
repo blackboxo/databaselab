@@ -5,8 +5,8 @@
 import datetime
 import json
 
-from mysql.util.engine_factory import EngineFactory
-from mysql.util.model import PostsRecord, UsersRecord
+from engine_factory import EngineFactory
+from model import PostsRecord, UsersRecord
 from sqlalchemy.sql import func
 
 
@@ -72,8 +72,8 @@ def search_multi_table(num, average_iteration_num=1):
         res = session.query(
             PostsRecord.title, PostsRecord.tags, PostsRecord.favorite_count,
             UsersRecord.display_name, UsersRecord.reputation).filter(
-                PostsRecord.owner_user_id == UsersRecord.id,
-                UsersRecord.reputation > num).all()
+            PostsRecord.owner_user_id == UsersRecord.id,
+            UsersRecord.reputation > num).all()
         if len(res) > 0:
             print("search_multi_table_result:", len(res), ":", res[0])
         else:
@@ -101,8 +101,8 @@ def search_aggregate(num, average_iteration_num=1):
         res = session.query(
             func.sum(PostsRecord.favorite_count), UsersRecord.display_name,
             UsersRecord.reputation).filter(
-                UsersRecord.id < num,
-                PostsRecord.owner_user_id == UsersRecord.id).all()
+            UsersRecord.id < num,
+            PostsRecord.owner_user_id == UsersRecord.id).all()
         if len(res) > 0:
             print("search_aggregate_result:", len(res), ":", res[0])
         else:
@@ -126,7 +126,6 @@ def start_test_search_and_record_result(start_test_num=100,
                                         step=100):
     result_list = []
     for num in range(start_test_num, max_test_num, step):
-
         ## 测试单表单条件查询平均运行时间值
         result = search_one_table_one_filter(
             num=num, average_iteration_num=iteration_num)

@@ -2,10 +2,10 @@
 import datetime
 import json
 
-from mysql.util.data_for_test_creator import create_post_test_data_in_test_db, delete_post_test_data_in_test_db
-from mysql.util.engine_factory import EngineFactory
-from mysql.util.index_util import add_score_view_count_index, delete_score_view_count_index
-from mysql.util.model import PostsRecord
+from util.data_for_test_creator import create_post_test_data_in_test_db, delete_post_test_data_in_test_db
+from util.engine_factory import EngineFactory
+from util.index_util import add_score_view_count_index, delete_score_view_count_index
+from util.model import PostsRecord
 
 
 def delete_multi_filter(num, index=True):

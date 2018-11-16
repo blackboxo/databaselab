@@ -4,9 +4,10 @@
 
 import datetime
 import json
-from mysql.util.index_util import add_score_view_count_index, delete_score_view_count_index
-from mysql.util.engine_factory import EngineFactory
-from mysql.util.model import PostsRecord, UsersRecord
+from util.index_util import add_score_view_count_index, delete_score_view_count_index
+
+from util.engine_factory import EngineFactory
+from util.model import PostsRecord, UsersRecord
 from sqlalchemy.sql import func
 
 
@@ -18,7 +19,7 @@ def update_one_table_one_filter(num, average_iteration_num=1):
         session = EngineFactory.create_session_to_test_so(echo=False)
         res = session.query(PostsRecord).filter(PostsRecord.id < num).update({
             'view_count':
-            PostsRecord.view_count + 1
+                PostsRecord.view_count + 1
         })
         session.commit()
         if len(res) > 0:
@@ -36,7 +37,7 @@ def update_one_table_one_filter(num, average_iteration_num=1):
         session = EngineFactory.create_session_to_test_so(echo=False)
         res = session.query(PostsRecord).filter(PostsRecord.id < num).update({
             'view_count':
-            PostsRecord.view_count - 1
+                PostsRecord.view_count - 1
         })
         session.commit()
         if len(res) > 0:
@@ -62,11 +63,11 @@ def update_one_table_mul_filter(num, average_iteration_num=1):
 
         res = session.query(PostsRecord).filter(
             PostsRecord.score > 20, PostsRecord.view_count > num).update({
-                'view_count':
+            'view_count':
                 PostsRecord.view_count + 1,
-                'favorite_count':
+            'favorite_count':
                 PostsRecord.favorite_count + 1
-            })
+        })
         if len(res) > 0:
             print("update_one_table_mul_filter_result:", len(res), ":", res[0])
         else:
@@ -83,11 +84,11 @@ def update_one_table_mul_filter(num, average_iteration_num=1):
 
         res = session.query(PostsRecord).filter(
             PostsRecord.score > 20, PostsRecord.view_count > num).update({
-                'view_count':
+            'view_count':
                 PostsRecord.view_count - 1,
-                'favorite_count':
+            'favorite_count':
                 PostsRecord.favorite_count - 1
-            })
+        })
         if len(res) > 0:
             print("update_one_table_mul_filter_back_result:", len(res), ":",
                   res[0])
@@ -111,9 +112,9 @@ def update_multi_table(num, average_iteration_num=1):
         res = session.query(PostsRecord, UsersRecord).filter(
             PostsRecord.owner_user_id == UsersRecord.id,
             PostsRecord.view_count > num).update({
-                'reputation':
+            'reputation':
                 UsersRecord.reputation + 1
-            })
+        })
         if len(res) > 0:
             print("update_multi_table_result:", len(res), ":", res[0])
         else:
@@ -131,9 +132,9 @@ def update_multi_table(num, average_iteration_num=1):
         res = session.query(PostsRecord, UsersRecord).filter(
             PostsRecord.owner_user_id == UsersRecord.id,
             PostsRecord.view_count > num).update({
-                'reputation':
+            'reputation':
                 UsersRecord.reputation - 1
-            })
+        })
         if len(res) > 0:
             print("update_multi_table_back_result:", len(res), ":", res[0])
         else:
@@ -155,11 +156,11 @@ def update_aggregate(num, average_iteration_num=1):
         res = session.query(PostsRecord, UsersRecord).filter(
             PostsRecord.owner_user_id == UsersRecord.id,
             PostsRecord.view_count > num).update({
-                'view_count':
+            'view_count':
                 PostsRecord.view_count + 1,
-                'reputation':
+            'reputation':
                 UsersRecord.reputation + 1
-            })
+        })
         if len(res) > 0:
             print("update_aggregate_result:", len(res), ":", res[0])
         else:
@@ -177,11 +178,11 @@ def update_aggregate(num, average_iteration_num=1):
         res = session.query(PostsRecord, UsersRecord).filter(
             PostsRecord.owner_user_id == UsersRecord.id,
             PostsRecord.view_count > num).update({
-                'view_count':
+            'view_count':
                 PostsRecord.view_count - 1,
-                'reputation':
+            'reputation':
                 UsersRecord.reputation - 1
-            })
+        })
         if len(res) > 0:
             print("update_aggregate__back_result:", len(res), ":", res[0])
         else:
@@ -200,7 +201,6 @@ def start_test_update_and_record_result(start_test_num=100,
                                         step=100):
     result_list = []
     for num in range(start_test_num, max_test_num, step):
-
         ## 测试单表单条件更新平均运行时间值
         result = update_one_table_one_filter(
             num=num, average_iteration_num=iteration_num)
