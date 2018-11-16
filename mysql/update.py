@@ -4,6 +4,9 @@
 
 import datetime
 import json
+from mysql.util.index_util import add_score_view_count_index, delete_score_view_count_index
+from mysql.util.engine_factory import EngineFactory
+from mysql.util.model import PostsRecord, UsersRecord
 
 from util.engine_factory import EngineFactory
 from util.model import PostsRecord, UsersRecord
@@ -32,6 +35,19 @@ def update_one_table_one_filter(num, average_iteration_num=1):
             num=num, time=time))
         sum_time = sum_time + time
 
+    for i in range(0, average_iteration_num):
+        session = EngineFactory.create_session_to_test_so(echo=False)
+        res = session.query(PostsRecord).limit(num).update({
+            'view_count':
+            PostsRecord.view_count - 1
+        })
+        session.commit()
+        if len(res) > 0:
+            print("update_one_table_one_filter_back_result:", len(res), ":",
+                  res[0])
+        else:
+            print("update_one_table_one_filter_back_result: null")
+
     return {
         "type": "update_one_table_one_filter",
         "num": num,
@@ -40,6 +56,7 @@ def update_one_table_one_filter(num, average_iteration_num=1):
 
 
 def update_one_table_mul_filter(num, average_iteration_num=1):
+    add_score_view_count_index()
     sum_time = 0.0
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
@@ -63,6 +80,23 @@ def update_one_table_mul_filter(num, average_iteration_num=1):
         print("test_update_one_table_mul_filter num={num} time={time}".format(
             num=num, time=time))
         sum_time = sum_time + time
+
+    for i in range(0, average_iteration_num):
+        session = EngineFactory.create_session_to_test_so(echo=False)
+
+        res = session.query(PostsRecord).filter(
+            PostsRecord.score > 20, PostsRecord.view_count > num).update({
+                'view_count':
+                PostsRecord.view_count - 1,
+                'favorite_count':
+                PostsRecord.favorite_count - 1
+            })
+        if len(res) > 0:
+            print("update_one_table_mul_filter_back_result:", len(res), ":",
+                  res[0])
+        else:
+            print("update_one_table_mul_filter_back_result: null")
+
     return {
         "type": "update_one_table_mul_filter",
         "num": num,
@@ -93,6 +127,20 @@ def update_multi_table(num, average_iteration_num=1):
         print("test_update_multi_table num={num} time={time}".format(
             num=num, time=time))
         sum_time = sum_time + time
+
+    for i in range(0, average_iteration_num):
+        session = EngineFactory.create_session_to_test_so(echo=False)
+
+        res = session.query(PostsRecord, UsersRecord).filter(
+            PostsRecord.owner_user_id == UsersRecord.id,
+            PostsRecord.view_count > num).update({
+                'reputation':
+                UsersRecord.reputation - 1
+            })
+        if len(res) > 0:
+            print("update_multi_table_back_result:", len(res), ":", res[0])
+        else:
+            print("update_multi_table__back_result: null")
     return {
         "type": "update_multi_table",
         "num": num,
@@ -125,6 +173,23 @@ def update_aggregate(num, average_iteration_num=1):
         print("test_update_aggregate num={num} time={time}".format(
             num=num, time=time))
         sum_time = sum_time + time
+
+    for i in range(0, average_iteration_num):
+        session = EngineFactory.create_session_to_test_so(echo=False)
+
+        res = session.query(PostsRecord, UsersRecord).filter(
+            PostsRecord.owner_user_id == UsersRecord.id,
+            PostsRecord.view_count > num).update({
+                'view_count':
+                PostsRecord.view_count - 1,
+                'reputation':
+                UsersRecord.reputation - 1
+            })
+        if len(res) > 0:
+            print("update_aggregate__back_result:", len(res), ":", res[0])
+        else:
+            print("update_aggregate__back_result: null")
+
     return {
         "type": "update_aggregate",
         "num": num,
@@ -158,6 +223,7 @@ def start_test_update_and_record_result(start_test_num=100,
         result = update_aggregate(num=num, average_iteration_num=iteration_num)
         result_list.append(result)
 
+    delete_score_view_count_index()
     output_file_name = "experiment_update.json"
     with open(output_file_name, "w") as f:
         json.dump(result_list, f)
