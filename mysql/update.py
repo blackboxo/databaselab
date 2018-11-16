@@ -9,6 +9,7 @@ from util.index_util import add_score_view_count_index, delete_score_view_count_
 from util.engine_factory import EngineFactory
 from util.model import PostsRecord, UsersRecord
 from sqlalchemy.sql import func
+from sqlalchemy import text
 
 
 def update_one_table_one_filter(num, average_iteration_num=1):
@@ -19,7 +20,7 @@ def update_one_table_one_filter(num, average_iteration_num=1):
         session = EngineFactory.create_session_to_test_so(echo=False)
         res = session.query(PostsRecord).filter(PostsRecord.id < num).update({
             'view_count':
-                PostsRecord.view_count + 1
+            PostsRecord.view_count + 1
         })
         session.commit()
         print("update_one_table_one_filter_result:", res)
@@ -34,7 +35,7 @@ def update_one_table_one_filter(num, average_iteration_num=1):
         session = EngineFactory.create_session_to_test_so(echo=False)
         res = session.query(PostsRecord).filter(PostsRecord.id < num).update({
             'view_count':
-                PostsRecord.view_count - 1
+            PostsRecord.view_count - 1
         })
         session.commit()
         print("update_one_table_one_filter_back_result:", res)
@@ -55,11 +56,11 @@ def update_one_table_mul_filter(num, average_iteration_num=1):
 
         res = session.query(PostsRecord).filter(
             PostsRecord.score > 20, PostsRecord.view_count > num).update({
-            'view_count':
+                'view_count':
                 PostsRecord.view_count + 1,
-            'favorite_count':
+                'favorite_count':
                 PostsRecord.favorite_count + 1
-        })
+            })
         session.commit()
         print("update_one_table_mul_filter_result:", res)
 
@@ -74,11 +75,11 @@ def update_one_table_mul_filter(num, average_iteration_num=1):
 
         res = session.query(PostsRecord).filter(
             PostsRecord.score > 20, PostsRecord.view_count > num).update({
-            'view_count':
+                'view_count':
                 PostsRecord.view_count - 1,
-            'favorite_count':
+                'favorite_count':
                 PostsRecord.favorite_count - 1
-        })
+            })
         session.commit()
         print("update_one_table_mul_filter_back_result:", res)
     return {
@@ -95,15 +96,25 @@ def update_multi_table(num, average_iteration_num=1):
 
         session = EngineFactory.create_session_to_test_so(echo=False)
 
-        res = session.query(PostsRecord, UsersRecord).filter(
-            PostsRecord.owner_user_id == UsersRecord.id,
-            PostsRecord.view_count > num).update({
-            'reputation':
-                UsersRecord.reputation + 1
-        })
-        session.commit()
+        # query = UsersRecord.update().values({
+        #     'reputation':
+        #     UsersRecord.reputation + 1
+        # })
+        # query = query.where(PostsRecord.owner_user_id == UsersRecord.id,
+        #                     PostsRecord.view_count > num)
+        # res = session.query(PostsRecord, UsersRecord).filter(
+        #     PostsRecord.owner_user_id == UsersRecord.id,
+        #     PostsRecord.view_count > num).update({
+        #         'reputation':
+        #         UsersRecord.reputation + 1
+        #     })
+        conn = session.connect()
+        sql = 'UPDATE UsersRecord INNER JOIN PostsRecord ON UsersRecord.id = PostsRecord.owner_user_id SET UsersRecord.reputation = {newReputation} WHERE PostsRecord.view_count > {num}'.format(
+            newReputation=UsersRecord.reputation + 1, num=num)
+        s = text(sql)
+        res = conn.execute(s)
+        conn.close()
         print("update_multi_table_result:", res)
-
         endtime = datetime.datetime.now()
         time = (endtime - starttime).total_seconds()
         print("test_update_multi_table num={num} time={time}".format(
@@ -113,13 +124,19 @@ def update_multi_table(num, average_iteration_num=1):
     for i in range(0, average_iteration_num):
         session = EngineFactory.create_session_to_test_so(echo=False)
 
-        res = session.query(PostsRecord, UsersRecord).filter(
-            PostsRecord.owner_user_id == UsersRecord.id,
-            PostsRecord.view_count > num).update({
-            'reputation':
-                UsersRecord.reputation - 1
-        })
-        session.commit()
+        # res = session.query(PostsRecord, UsersRecord).filter(
+        #     PostsRecord.owner_user_id == UsersRecord.id,
+        #     PostsRecord.view_count > num).update({
+        #         'reputation':
+        #         UsersRecord.reputation - 1
+        #     })
+        # session.commit()
+        conn = session.connect()
+        sql = 'UPDATE UsersRecord INNER JOIN PostsRecord ON UsersRecord.id = PostsRecord.owner_user_id SET UsersRecord.reputation = {newReputation} WHERE PostsRecord.view_count > {num}'.format(
+            newReputation=UsersRecord.reputation - 1, num=num)
+        s = text(sql)
+        res = conn.execute(s)
+        conn.close()
         print("update_multi_table_back_result:", res)
     return {
         "type": "update_multi_table",
@@ -135,15 +152,23 @@ def update_aggregate(num, average_iteration_num=1):
 
         session = EngineFactory.create_session_to_test_so(echo=False)
 
-        res = session.query(PostsRecord, UsersRecord).filter(
-            PostsRecord.owner_user_id == UsersRecord.id,
-            PostsRecord.view_count > num).update({
-            'view_count':
-                PostsRecord.view_count + 1,
-            'reputation':
-                UsersRecord.reputation + 1
-        })
-        session.commit()
+        # res = session.query(PostsRecord, UsersRecord).filter(
+        #     PostsRecord.owner_user_id == UsersRecord.id,
+        #     PostsRecord.view_count > num).update({
+        #         'view_count':
+        #         PostsRecord.view_count + 1,
+        #         'reputation':
+        #         UsersRecord.reputation + 1
+        #     })
+        # session.commit()
+        conn = session.connect()
+        sql = 'UPDATE UsersRecord,PostsRecord INNER JOIN PostsRecord ON UsersRecord.id = PostsRecord.owner_user_id SET UsersRecord.reputation = {newReputation},PostsRecord.view_count = {newViewCount} WHERE PostsRecord.view_count > {num}'.format(
+            newReputation=UsersRecord.reputation + 1,
+            newViewCount=PostsRecord.view_count + 1,
+            num=num)
+        s = text(sql)
+        res = conn.execute(s)
+        conn.close()
         print("update_aggregate_result:", res)
 
         endtime = datetime.datetime.now()
@@ -158,11 +183,11 @@ def update_aggregate(num, average_iteration_num=1):
         res = session.query(PostsRecord, UsersRecord).filter(
             PostsRecord.owner_user_id == UsersRecord.id,
             PostsRecord.view_count > num).update({
-            'view_count':
+                'view_count':
                 PostsRecord.view_count - 1,
-            'reputation':
+                'reputation':
                 UsersRecord.reputation - 1
-        })
+            })
         session.commit()
         print("update_aggregate_back_result:", res)
     return {
