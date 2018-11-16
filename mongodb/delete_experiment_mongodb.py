@@ -10,6 +10,7 @@ import json
 from collection_factory import CollectionFactory
 from pymongo import InsertOne
 from pymongo import DeleteOne
+from pymongo import DeleteMany
 from data_factory import Datafactory
 from pymongo.errors import BulkWriteError
 
@@ -33,7 +34,8 @@ def delete_batch(num,mydb,average_iteration_num=1,tags_id=False):
         # 主要删除操作
         starttime = datetime.datetime.now()
         # 批量删除  delete_many({})
-        mydb["testDleteTags"].bulk_write(list(map(DeleteOne, tags_list)))
+        mydb["testDleteTags"].bulk_write(list(map(DeleteMany, tags_list)))
+        # mydb["testDleteTags"].bulk_write(list(map(DeleteOne, tags_list)))
         endtime = datetime.datetime.now()
         sum_time = (endtime - starttime).total_seconds()
 
