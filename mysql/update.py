@@ -94,7 +94,7 @@ def update_multi_table(num, average_iteration_num=1):
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
 
-        session = EngineFactory.create_session_to_test_so(echo=False)
+        session = EngineFactory.create_engine_to_test_so()
 
         # query = UsersRecord.update().values({
         #     'reputation':
@@ -122,7 +122,7 @@ def update_multi_table(num, average_iteration_num=1):
         sum_time = sum_time + time
 
     for i in range(0, average_iteration_num):
-        session = EngineFactory.create_session_to_test_so(echo=False)
+        session = EngineFactory.create_engine_to_test_so()
 
         # res = session.query(PostsRecord, UsersRecord).filter(
         #     PostsRecord.owner_user_id == UsersRecord.id,
@@ -150,7 +150,7 @@ def update_aggregate(num, average_iteration_num=1):
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
 
-        session = EngineFactory.create_session_to_test_so(echo=False)
+        session = EngineFactory.create_engine_to_test_so()
 
         # res = session.query(PostsRecord, UsersRecord).filter(
         #     PostsRecord.owner_user_id == UsersRecord.id,
@@ -178,17 +178,25 @@ def update_aggregate(num, average_iteration_num=1):
         sum_time = sum_time + time
 
     for i in range(0, average_iteration_num):
-        session = EngineFactory.create_session_to_test_so(echo=False)
+        session = EngineFactory.create_engine_to_test_so()
 
-        res = session.query(PostsRecord, UsersRecord).filter(
-            PostsRecord.owner_user_id == UsersRecord.id,
-            PostsRecord.view_count > num).update({
-                'view_count':
-                PostsRecord.view_count - 1,
-                'reputation':
-                UsersRecord.reputation - 1
-            })
-        session.commit()
+        # res = session.query(PostsRecord, UsersRecord).filter(
+        #     PostsRecord.owner_user_id == UsersRecord.id,
+        #     PostsRecord.view_count > num).update({
+        #         'view_count':
+        #         PostsRecord.view_count - 1,
+        #         'reputation':
+        #         UsersRecord.reputation - 1
+        #     })
+        # session.commit()
+        conn = session.connect()
+        sql = 'UPDATE UsersRecord,PostsRecord INNER JOIN PostsRecord ON UsersRecord.id = PostsRecord.owner_user_id SET UsersRecord.reputation = {newReputation},PostsRecord.view_count = {newViewCount} WHERE PostsRecord.view_count > {num}'.format(
+            newReputation=UsersRecord.reputation - 1,
+            newViewCount=PostsRecord.view_count - 1,
+            num=num)
+        s = text(sql)
+        res = conn.execute(s)
+        conn.close()
         print("update_aggregate_back_result:", res)
     return {
         "type": "update_aggregate",
