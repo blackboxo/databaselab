@@ -136,8 +136,9 @@ def update_multi_table(num, average_iteration_num=1):
             num=num)
         s = text(sql)
         res = conn.execute(s)
+        print("update_multi_table_back_result:", res.rowcount)
         conn.close()
-        print("update_multi_table_back_result:", res)
+        
     return {
         "type": "update_multi_table",
         "num": num,
@@ -166,8 +167,9 @@ def update_aggregate(num, average_iteration_num=1):
             num=num)
         s = text(sql)
         res = conn.execute(s)
+        print("update_aggregate_result:",  res.rowcount)
         conn.close()
-        print("update_aggregate_result:", res)
+        
 
         endtime = datetime.datetime.now()
         time = (endtime - starttime).total_seconds()
@@ -192,8 +194,9 @@ def update_aggregate(num, average_iteration_num=1):
             num=num)
         s = text(sql)
         res = conn.execute(s)
+        print("update_aggregate_back_result:", res.rowcount)
         conn.close()
-        print("update_aggregate_back_result:", res)
+        
     return {
         "type": "update_aggregate",
         "num": num,
