@@ -113,7 +113,7 @@ def update_multi_table(num, average_iteration_num=1):
             num=num)
         s = text(sql)
         res = conn.execute(s)
-        print("update_multi_table_result:", res.ResultProxy.rowcount)
+        print("update_multi_table_result:", res.rowcount)
         conn.close()
         endtime = datetime.datetime.now()
         time = (endtime - starttime).total_seconds()
