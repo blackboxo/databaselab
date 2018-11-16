@@ -102,7 +102,7 @@ def search_aggregate(num, average_iteration_num=1):
             func.sum(PostsRecord.favorite_count), UsersRecord.display_name,
             UsersRecord.reputation).filter(
                 PostsRecord.owner_user_id == UsersRecord.id,
-                UsersRecord.id < num).all()
+                UsersRecord.id < num).group_by(UsersRecord.id).all()
         if len(res) > 0:
             print("search_aggregate_result:", len(res), ":", res[0])
         else:
@@ -120,10 +120,10 @@ def search_aggregate(num, average_iteration_num=1):
     }
 
 
-def start_test_search_and_record_result(start_test_num=1000,
-                                        max_test_num=2000,
+def start_test_search_and_record_result(start_test_num=100,
+                                        max_test_num=200,
                                         iteration_num=1,
-                                        step=1000):
+                                        step=100):
     result_list = []
     for num in range(start_test_num, max_test_num, step):
 
