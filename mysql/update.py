@@ -60,6 +60,7 @@ def update_one_table_mul_filter(num, average_iteration_num=1):
             'favorite_count':
                 PostsRecord.favorite_count + 1
         })
+        session.commit()
         print("update_one_table_mul_filter_result:", res)
 
         endtime = datetime.datetime.now()
@@ -78,6 +79,7 @@ def update_one_table_mul_filter(num, average_iteration_num=1):
             'favorite_count':
                 PostsRecord.favorite_count - 1
         })
+        session.commit()
         print("update_one_table_mul_filter_back_result:", res)
     return {
         "type": "update_one_table_mul_filter",
@@ -99,6 +101,7 @@ def update_multi_table(num, average_iteration_num=1):
             'reputation':
                 UsersRecord.reputation + 1
         })
+        session.commit()
         print("update_multi_table_result:", res)
 
         endtime = datetime.datetime.now()
@@ -116,6 +119,7 @@ def update_multi_table(num, average_iteration_num=1):
             'reputation':
                 UsersRecord.reputation - 1
         })
+        session.commit()
         print("update_multi_table_back_result:", res)
     return {
         "type": "update_multi_table",
@@ -139,6 +143,7 @@ def update_aggregate(num, average_iteration_num=1):
             'reputation':
                 UsersRecord.reputation + 1
         })
+        session.commit()
         print("update_aggregate_result:", res)
 
         endtime = datetime.datetime.now()
@@ -158,6 +163,7 @@ def update_aggregate(num, average_iteration_num=1):
             'reputation':
                 UsersRecord.reputation - 1
         })
+        session.commit()
         print("update_aggregate_back_result:", res)
     return {
         "type": "update_aggregate",
