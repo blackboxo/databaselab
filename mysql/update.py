@@ -20,12 +20,9 @@ def update_one_table_one_filter(num, average_iteration_num=1):
         res = session.query(PostsRecord).filter(PostsRecord.id < num).update({
             'view_count':
                 PostsRecord.view_count + 1
-        }).all()
+        })
         session.commit()
-        if len(res) > 0:
-            print("update_one_table_one_filter_result:", len(res), ":", res[0])
-        else:
-            print("update_one_table_one_filter_result: null")
+        print("update_one_table_one_filter_result:", res)
 
         endtime = datetime.datetime.now()
         time = (endtime - starttime).total_seconds()
@@ -38,14 +35,9 @@ def update_one_table_one_filter(num, average_iteration_num=1):
         res = session.query(PostsRecord).filter(PostsRecord.id < num).update({
             'view_count':
                 PostsRecord.view_count - 1
-        }).all()
+        })
         session.commit()
-        if len(res) > 0:
-            print("update_one_table_one_filter_back_result:", len(res), ":",
-                  res[0])
-        else:
-            print("update_one_table_one_filter_back_result: null")
-
+        print("update_one_table_one_filter_back_result:", res)
     return {
         "type": "update_one_table_one_filter",
         "num": num,
@@ -67,11 +59,8 @@ def update_one_table_mul_filter(num, average_iteration_num=1):
                 PostsRecord.view_count + 1,
             'favorite_count':
                 PostsRecord.favorite_count + 1
-        }).all()
-        if len(res) > 0:
-            print("update_one_table_mul_filter_result:", len(res), ":", res[0])
-        else:
-            print("update_one_table_mul_filter_result: null")
+        })
+        print("update_one_table_mul_filter_result:", res)
 
         endtime = datetime.datetime.now()
         time = (endtime - starttime).total_seconds()
@@ -88,13 +77,8 @@ def update_one_table_mul_filter(num, average_iteration_num=1):
                 PostsRecord.view_count - 1,
             'favorite_count':
                 PostsRecord.favorite_count - 1
-        }).all()
-        if len(res) > 0:
-            print("update_one_table_mul_filter_back_result:", len(res), ":",
-                  res[0])
-        else:
-            print("update_one_table_mul_filter_back_result: null")
-
+        })
+        print("update_one_table_mul_filter_back_result:", res)
     return {
         "type": "update_one_table_mul_filter",
         "num": num,
@@ -114,11 +98,8 @@ def update_multi_table(num, average_iteration_num=1):
             PostsRecord.view_count > num).update({
             'reputation':
                 UsersRecord.reputation + 1
-        }).all()
-        if len(res) > 0:
-            print("update_multi_table_result:", len(res), ":", res[0])
-        else:
-            print("update_multi_table_result: null")
+        })
+        print("update_multi_table_result:", res)
 
         endtime = datetime.datetime.now()
         time = (endtime - starttime).total_seconds()
@@ -134,11 +115,8 @@ def update_multi_table(num, average_iteration_num=1):
             PostsRecord.view_count > num).update({
             'reputation':
                 UsersRecord.reputation - 1
-        }).all()
-        if len(res) > 0:
-            print("update_multi_table_back_result:", len(res), ":", res[0])
-        else:
-            print("update_multi_table__back_result: null")
+        })
+        print("update_multi_table_back_result:", res)
     return {
         "type": "update_multi_table",
         "num": num,
@@ -160,11 +138,8 @@ def update_aggregate(num, average_iteration_num=1):
                 PostsRecord.view_count + 1,
             'reputation':
                 UsersRecord.reputation + 1
-        }).all()
-        if len(res) > 0:
-            print("update_aggregate_result:", len(res), ":", res[0])
-        else:
-            print("update_aggregate_result: null")
+        })
+        print("update_aggregate_result:", res)
 
         endtime = datetime.datetime.now()
         time = (endtime - starttime).total_seconds()
@@ -182,12 +157,8 @@ def update_aggregate(num, average_iteration_num=1):
                 PostsRecord.view_count - 1,
             'reputation':
                 UsersRecord.reputation - 1
-        }).all()
-        if len(res) > 0:
-            print("update_aggregate__back_result:", len(res), ":", res[0])
-        else:
-            print("update_aggregate__back_result: null")
-
+        })
+        print("update_aggregate_back_result:", res)
     return {
         "type": "update_aggregate",
         "num": num,
