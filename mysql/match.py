@@ -8,6 +8,7 @@ import json
 from util.engine_factory import EngineFactory
 from util.model import PostsRecord, UsersRecord
 from sqlalchemy.sql import func
+from sqlalchemy import text
 
 
 def search_one_table_one_filter(num, average_iteration_num, session):
@@ -39,14 +40,20 @@ def search_one_table_mul_filter(num, average_iteration_num, session):
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
 
-        res = session.query(PostsRecord).filter(
-            PostsRecord.view_count > 1000,
-            PostsRecord.owner_user_id < num).count()
+        # res = session.query(PostsRecord).filter(
+        #     PostsRecord.view_count > 1000,
+        #     PostsRecord.owner_user_id < num).count()
         # if len(res) > 0:
         #     print("search_one_table_mul_filter_result:", len(res), ":", res[0])
         # else:
         #     print("search_one_table_mul_filter_result: null")
-
+        conn = session.connect()
+        sql = 'SELECT * FROM posts WHERE posts.ViewCount > 1000 and posts.OwnerUserId < {num}'.format(
+            num=num)
+        s = text(sql)
+        res = conn.execute(s)
+        print("search_one_table_mul_filter_result:", res.rowcount)
+        conn.close()
         endtime = datetime.datetime.now()
         time = (endtime - starttime).total_seconds()
         print("test_search_one_table_mul_filter num={num} time={time}".format(
@@ -113,7 +120,7 @@ def search_aggregate(num, average_iteration_num, session):
     }
 
 
-def start_test_search_and_record_result(start_test_num=10000,
+def start_test_search_and_record_result(start_test_num=20000,
                                         max_test_num=100000,
                                         iteration_num=3,
                                         step=10000):
@@ -122,9 +129,9 @@ def start_test_search_and_record_result(start_test_num=10000,
     for num in range(start_test_num, max_test_num, step):
 
         ## 测试单表单条件查询平均运行时间值
-        result = search_one_table_one_filter(
-            num=num, average_iteration_num=iteration_num, session=session)
-        result_list.append(result)
+        # result = search_one_table_one_filter(
+        #     num=num, average_iteration_num=iteration_num, session=session)
+        # result_list.append(result)
 
         ## 测试单表多条件查询平均运行时间值
         result = search_one_table_mul_filter(
@@ -132,14 +139,14 @@ def start_test_search_and_record_result(start_test_num=10000,
         result_list.append(result)
 
         ## 测试多表联合查询平均运行时间值
-        result = search_multi_table(
-            num=num, average_iteration_num=iteration_num, session=session)
-        result_list.append(result)
+        # result = search_multi_table(
+        #     num=num, average_iteration_num=iteration_num, session=session)
+        # result_list.append(result)
 
-        ## 测试聚合查询平均运行时间值
-        result = search_aggregate(
-            num=num, average_iteration_num=iteration_num, session=session)
-        result_list.append(result)
+        # ## 测试聚合查询平均运行时间值
+        # result = search_aggregate(
+        #     num=num, average_iteration_num=iteration_num, session=session)
+        # result_list.append(result)
 
     output_file_name = "experiment_search.json"
     with open(output_file_name, "w") as f:
