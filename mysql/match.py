@@ -103,7 +103,7 @@ def search_aggregate(num, average_iteration_num, session):
     sum_time = 0.0
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
-
+        session = EngineFactory.create_engine_to_test_so()
         # res = session.query(
         #     func.sum(PostsRecord.favorite_count), UsersRecord.display_name,
         #     UsersRecord.reputation).filter(
