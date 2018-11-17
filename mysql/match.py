@@ -15,7 +15,7 @@ def search_one_table_one_filter(num, average_iteration_num, session):
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
 
-        res = session.query(PostsRecord).limit(num)
+        res = session.query(PostsRecord).limit(num).count()
         # if len(res) > 0:
         #     print("search_one_table_one_filter_result:", len(res), ":", res[0])
         # else:
@@ -41,7 +41,7 @@ def search_one_table_mul_filter(num, average_iteration_num, session):
 
         res = session.query(PostsRecord).filter(
             PostsRecord.view_count > 1000,
-            PostsRecord.owner_user_id < num)
+            PostsRecord.owner_user_id < num).count()
         # if len(res) > 0:
         #     print("search_one_table_mul_filter_result:", len(res), ":", res[0])
         # else:
@@ -68,7 +68,7 @@ def search_multi_table(num, average_iteration_num, session):
             PostsRecord.title, PostsRecord.tags, PostsRecord.favorite_count,
             UsersRecord.display_name, UsersRecord.reputation).filter(
                 PostsRecord.owner_user_id == UsersRecord.id,
-                UsersRecord.reputation > num)
+                UsersRecord.reputation > num).count()
         # if len(res) > 0:
         #     print("search_multi_table_result:", len(res), ":", res[0])
         # else:
@@ -95,7 +95,7 @@ def search_aggregate(num, average_iteration_num, session):
             func.sum(PostsRecord.favorite_count), UsersRecord.display_name,
             UsersRecord.reputation).filter(
                 PostsRecord.owner_user_id == UsersRecord.id,
-                UsersRecord.id < num).group_by(UsersRecord.id)
+                UsersRecord.id < num).group_by(UsersRecord.id).count()
         # if len(res) > 0:
         #     print("search_aggregate_result:", len(res), ":", res[0], res[1])
         # else:
