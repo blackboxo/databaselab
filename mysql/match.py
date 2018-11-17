@@ -39,7 +39,7 @@ def search_one_table_mul_filter(num, average_iteration_num, session):
     sum_time = 0.0
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
-
+        session = EngineFactory.create_engine_to_test_so()
         # res = session.query(PostsRecord).filter(
         #     PostsRecord.view_count > 1000,
         #     PostsRecord.owner_user_id < num).count()
