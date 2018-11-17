@@ -81,7 +81,7 @@ def search_multi_table(num, average_iteration_num, session):
         # else:
         #     print("search_multi_table_result: null")
         conn = session.connect()
-        sql = 'SELECT posts.Title,posts.Tags,posts.FavoriteCount,users.DisplayName,users.Reputation FROM posts INNER JOIN users ON users.id = posts.OwnerUserId WHERE users.Reputation > {num}'.format(
+        sql = 'SELECT posts.Title,posts.Tags,posts.FavoriteCount,users.DisplayName,users.Reputation FROM posts INNER JOIN users ON users.Id = posts.OwnerUserId WHERE users.Reputation > {num}'.format(
             num=num)
         s = text(sql)
         res = conn.execute(s)
@@ -114,11 +114,11 @@ def search_aggregate(num, average_iteration_num, session):
         # else:
         #     print("search_aggregate_result: null")
         conn = session.connect()
-        sql = 'SELECT SUM(posts.FavoriteCount),users.DisplayName,users.Reputation FROM posts INNER JOIN users ON users.id = posts.OwnerUserId WHERE users.Id < {num} GROUP BY users.id'.format(
+        sql = 'SELECT SUM(posts.FavoriteCount),users.DisplayName,users.Reputation FROM posts INNER JOIN users ON users.Id = posts.OwnerUserId WHERE users.Id < {num} GROUP BY users.Id'.format(
             num=num)
         s = text(sql)
         res = conn.execute(s)
-        print("search_multi_table_result:", res.rowcount)
+        print("search_aggregate_result:", res.rowcount)
         conn.close()
         endtime = datetime.datetime.now()
         time = (endtime - starttime).total_seconds()
