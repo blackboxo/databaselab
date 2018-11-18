@@ -52,15 +52,7 @@ SELECT SUM(Posts. FavoriteCount), Users. DisplayName, Users. Reputation  FROM Po
 
 额外索引建立: 无
 
-## 功能简介
-1. collection_factory:
-   连接mongodb数据库操作，可以选择返回database或者collection
-2. data_factory:
-   返回list类型的数据集合，在插入或者删除操作的时候会用到
-3. delete（insert）_experiment_factory:
-   进行删除插入的操作测试
-   
-更新
+### 更新
 1.单表单条件更新 update_batch：
 
 用户表id为1的用户，更新display_name
@@ -80,6 +72,15 @@ SELECT SUM(Posts. FavoriteCount), Users. DisplayName, Users. Reputation  FROM Po
 用户表id为1,post表id为1的用户，更新display_name、posts表的1000
 
 额外索引建立: 无   
+
+## 功能简介
+1. collection_factory:
+   连接mongodb数据库操作，可以选择返回database或者collection
+2. data_factory:
+   返回list类型的数据集合，在插入或者删除操作的时候会用到
+3. delete（insert）_experiment_factory:
+   进行删除插入的操作测试
+   
    
 ### 其他实验
 todo，待补充
