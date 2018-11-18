@@ -47,7 +47,7 @@ def update_one_table_one_filter(num, average_iteration_num=1):
 
 
 def update_one_table_mul_filter(num, average_iteration_num=1):
-    add_score_view_count_index()
+ 
     sum_time = 0.0
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
@@ -216,9 +216,11 @@ def start_test_update_and_record_result(start_test_num=10000,
         result_list.append(result)
 
         ## 测试单表多条件多值更新平均运行时间值
+        add_score_view_count_index()
         result = update_one_table_mul_filter(
             num=num, average_iteration_num=iteration_num)
         result_list.append(result)
+        delete_score_view_count_index()
 
         ## 测试多表联查单表更新平均运行时间值
         result = update_multi_table(
@@ -229,7 +231,7 @@ def start_test_update_and_record_result(start_test_num=10000,
         result = update_aggregate(num=num, average_iteration_num=iteration_num)
         result_list.append(result)
 
-    delete_score_view_count_index()
+    
     output_file_name = "experiment_update.json"
     with open(output_file_name, "w") as f:
         json.dump(result_list, f)
