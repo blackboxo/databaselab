@@ -60,7 +60,26 @@ SELECT SUM(Posts. FavoriteCount), Users. DisplayName, Users. Reputation  FROM Po
 3. delete（insert）_experiment_factory:
    进行删除插入的操作测试
    
-   
+更新
+1.单表单条件更新 update_batch：
+
+用户表id为1的用户，更新display_name
+
+2.单表多条件多值更新 update_batch_mutiple：
+
+用户表id为1，display_name的用户，更新display_name
+
+3.多表联查单表更新 update_batch_mutiple_query_one_update：
+
+用户表id为1,post表id为1的用户，更新display_name
+
+额外索引建立: 无
+
+4.多表联查多表更新 update_batch_mutiple_query_mutiple_update：
+
+用户表id为1,post表id为1的用户，更新display_name、posts表的1000
+
+额外索引建立: 无   
    
 ### 其他实验
 todo，待补充
