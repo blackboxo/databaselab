@@ -6,73 +6,123 @@
 '''
 
 import datetime
+import json
 from collection_factory import CollectionFactory
-from pymongo import InsertOne, DeleteOne
+from pymongo import InsertOne
+from pymongo import DeleteOne
+from pymongo import DeleteMany
+from data_factory import Datafactory
+from pymongo.errors import BulkWriteError
 
 
-def delete_batch(num, average_iteration_num=1):
-    mydb = CollectionFactory.create_client_and_db()
+def delete_batch(num,mydb,average_iteration_num=1,tags_id=False):
+    sum_time = 0.0
+    # 获取数据，可以修改mydb.find().limit(num)
+    if tags_id == True:
+        tags_list = Datafactory.create_tags_id(num)
+    else:
+        tags_list = Datafactory.create_tags(num)
 
-    starttime = datetime.datetime.now()
-    res = []
-    for i in range(0, num):
-        res.append(DeleteOne({'_id': i, 'x': 1}))
-    mydb['test_2'].bulk_write(res)
+    for i in range(average_iteration_num):
+        mydb["testDleteTags"].delete_many({})  # 清空数据库
+        # 向测试的collection插入数据
+        try:
+            mydb["testDleteTags"].bulk_write(list(map(InsertOne, tags_list)))
+        except BulkWriteError as bwe:
+            print(bwe.details)
 
-    endtime = datetime.datetime.now()
-    sum_time = (endtime - starttime).total_seconds()
+        # 主要删除操作
+        starttime = datetime.datetime.now()
+        # 批量删除  delete_many({})
+        mydb["testDleteTags"].bulk_write(list(map(DeleteMany, tags_list)))
+        # mydb["testDleteTags"].bulk_write(list(map(DeleteOne, tags_list)))
+        endtime = datetime.datetime.now()
+        sum_time = (endtime - starttime).total_seconds()
 
+    type = "delete batch _id" if tags_id else "delete batch id"
     return {
-        "type": "delete batch",
+        "type": type,
         "num": num,
         "time": sum_time
     }
 
-def delete_separate(num,average_iteration_num=1):
+    # res = []
+    # for i in range(0, num):
+    #     res.append(DeleteOne({'_id': i, 'x': 1}))
+    # mydb['test_2'].bulk_write(res)
 
-    mydb = CollectionFactory.create_client_and_db()
-    starttime = datetime.datetime.now()
-    # 逐条写
-    for i in range(0,num):
-        # 不存在会新建一个数据库表
-        # 插入测试的时候目前没有用post或者tags，之后自己修改
-        mydb['test_1'].delete_one({'_id':i,'x':1})
-    endtime = datetime.datetime.now()
-    sum_time = (endtime - starttime).total_seconds()
+def delete_separate(num,mydb,average_iteration_num=1,tags_id=False):
+    sum_time = 0.0
+    if tags_id==True:
+        tags_list = Datafactory.create_tags_id(num)
+    else:
+        tags_list = Datafactory.create_tags(num)
+    for i in range(average_iteration_num):
+        # 向测试的collection插入数据
+        mydb["testDleteTags"].delete_many({})  # 清空数据库
+        try:
+            mydb["testDleteTags"].bulk_write(list(map(InsertOne,tags_list)))
+        except BulkWriteError as bwe:
+            print(bwe.details)
 
+        starttime = datetime.datetime.now()
+        # 逐条删除
+        for tags in tags_list:
+            mydb['testDleteTags'].delete_one(tags)
+
+        endtime = datetime.datetime.now()
+        sum_time = (endtime - starttime).total_seconds()
+
+    type = "delete separate _id" if tags_id else "delete separate id"
     return {
-        "type": "delete separate",
+        "type": type,
         "num": num,
-        "time": sum_time
+        "time": sum_time/average_iteration_num
     }
 
-def start_test_delete_exp(num,iteration_num=1):
+
+
+def start_test_delete_exp(num_list,mydb,iteration_num=3):
     result_list = []
-    ## 测试批量的删除操作时间
 
-    ## 计算平均运行时间值
-    result = delete_batch(num=num)
-    print(result)
-    result_list.append(result)
+    for num in num_list:
+        ## 计算批量删除（id）时间值
+        result = delete_batch(num,mydb,iteration_num)
+        result_list.append(result)
 
-    ## 测试非批量的删除操作时间
-    result = delete_separate(num=num)
-    print(result)
-    result_list.append(result)
+    for num in num_list:
+        ## 计算批量删除（_id)时间值
+        result = delete_batch(num,mydb,iteration_num,tags_id=True)
+        result_list.append(result)
+
+    for num in num_list:
+        ## 测试非批量的删除(id)操作时间
+        result = delete_separate(num,mydb,iteration_num)
+        result_list.append(result)
+
+    for num in num_list:
+        ## 测试非批量的删除(_id)操作时间
+        result = delete_separate(num,mydb,iteration_num,tags_id=True)
+        result_list.append(result)
+
+    filename = "experiment_mongodb_delete_result.json"
+    save(filename,result_list)
+
+
+def save(filename, result_list):
+    with open(filename, "w") as f:
+        json.dump(result_list, f)
+
+def demo():
+    mydb = CollectionFactory.create_client_and_db()
+    num_list = [5000, 10000]
+    # 传入数据量，数据库，测试次数
+    start_test_delete_exp(num_list, mydb, 3)
 
 if __name__ == '__main__':
-
-    start_test_delete_exp(10000)
-
-    # # result_list = None
-    # filename = "experiment_mongodb_insert.json"
-    # # time = insert_seperate(100)
-    # # result_list.append(time)
-    # # save(filename,result_list)
-    # with open(filename) as f:
-    #     result_list = json.load(f)
-    # result_list.append(result_list[0])
-    # with open(filename, 'w') as f:
-    #     json.dump(result_list, f)
+    mydb = CollectionFactory.create_client_and_db()
+    num_list = [5000]
+    # 传入数据量，数据库，测试次数
+    start_test_delete_exp(num_list,mydb,3)
 
 
