@@ -246,6 +246,9 @@ def start_test_insert_and_delete_and_record_result(start_test_num=100, max_test_
         result = insert_delete_separate_repeatedly(num=num, repeat_time=iteration_num)
         result_list.extend(result)
 
+        output_file_name = "experiment_insert_delete_mysql.json"
+        with open(output_file_name, "w") as f:
+            json.dump(result_list, f)
     output_file_name = "experiment_insert_delete_mysql.json"
     with open(output_file_name, "w") as f:
         json.dump(result_list, f)
