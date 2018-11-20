@@ -16,7 +16,7 @@ def search_one_table_one_filter(num, average_iteration_num, session):
     for i in range(0, average_iteration_num):
         starttime = datetime.datetime.now()
 
-        res = session.query(PostsRecord).limit(num).count()
+        res = session.query(PostsRecord.id).limit(num)
         # if len(res) > 0:
         #     print("search_one_table_one_filter_result:", len(res), ":", res[0])
         # else:
@@ -48,7 +48,7 @@ def search_one_table_mul_filter(num, average_iteration_num, session):
         # else:
         #     print("search_one_table_mul_filter_result: null")
         conn = session.connect()
-        sql = 'SELECT * FROM posts WHERE posts.ViewCount > 1000 and posts.OwnerUserId < {num}'.format(
+        sql = 'SELECT posts.Id FROM posts WHERE posts.ViewCount > 1000 and posts.OwnerUserId < {num}'.format(
             num=num)
         s = text(sql)
         res = conn.execute(s)
@@ -81,7 +81,7 @@ def search_multi_table(num, average_iteration_num, session):
         # else:
         #     print("search_multi_table_result: null")
         conn = session.connect()
-        sql = 'SELECT posts.Title,posts.Tags,posts.FavoriteCount,users.DisplayName,users.Reputation FROM posts INNER JOIN users ON users.Id = posts.OwnerUserId WHERE users.Reputation > {num}'.format(
+        sql = 'SELECT posts.Id FROM posts INNER JOIN users ON users.Id = posts.OwnerUserId WHERE users.Reputation > {num}'.format(
             num=num)
         s = text(sql)
         res = conn.execute(s)
@@ -114,7 +114,7 @@ def search_aggregate(num, average_iteration_num, session):
         # else:
         #     print("search_aggregate_result: null")
         conn = session.connect()
-        sql = 'SELECT SUM(posts.FavoriteCount),users.DisplayName,users.Reputation FROM posts INNER JOIN users ON users.Id = posts.OwnerUserId WHERE users.Id < {num} GROUP BY users.Id'.format(
+        sql = 'SELECT SUM(posts.FavoriteCount) FROM posts INNER JOIN users ON users.Id = posts.OwnerUserId WHERE users.Id < {num} GROUP BY users.Id'.format(
             num=num)
         s = text(sql)
         res = conn.execute(s)
