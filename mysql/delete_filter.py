@@ -70,7 +70,9 @@ def start_test_delete_filter_and_record_result(start_test_num=100, max_test_num=
         ## 计算平均运行时间值
         result = delete_multi_filter_repeately(num=num, repeat_time=iteration_num)
         result_list.extend(result)
-
+        output_file_name = "experiment_delete_filter_mysql.json"
+        with open(output_file_name, "w") as f:
+            json.dump(result_list, f)
     output_file_name = "experiment_delete_filter_mysql.json"
     with open(output_file_name, "w") as f:
         json.dump(result_list, f)

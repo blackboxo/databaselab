@@ -230,7 +230,9 @@ def start_test_update_and_record_result(start_test_num=10000,
         ## 测试多表联查多表更新平均运行时间值
         result = update_aggregate(num=num, average_iteration_num=iteration_num)
         result_list.append(result)
-
+        output_file_name = "experiment_update.json"
+        with open(output_file_name, "w") as f:
+            json.dump(result_list, f)
     
     output_file_name = "experiment_update.json"
     with open(output_file_name, "w") as f:

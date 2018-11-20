@@ -159,7 +159,9 @@ def start_test_search_and_record_result(start_test_num=10000,
         result = search_aggregate(
             num=num, average_iteration_num=iteration_num, session=session)
         result_list.append(result)
-
+        output_file_name = "experiment_search.json"
+        with open(output_file_name, "w") as f:
+            json.dump(result_list, f)
     output_file_name = "experiment_search.json"
     with open(output_file_name, "w") as f:
         json.dump(result_list, f)
