@@ -138,7 +138,7 @@ def start_test_search_and_record_result(start_test_num=10000,
                                         step=10000):
     result_list = []
     session = EngineFactory.create_session_to_test_so(echo=False)
-    for num in range(start_test_num, max_test_num, step):
+    for num in range(start_test_num, max_test_num+1, step):
 
         ## 测试单表单条件查询平均运行时间值
         result = search_one_table_one_filter(

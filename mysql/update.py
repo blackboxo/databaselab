@@ -209,7 +209,7 @@ def start_test_update_and_record_result(start_test_num=10000,
                                         iteration_num=3,
                                         step=10000):
     result_list = []
-    for num in range(start_test_num, max_test_num, step):
+    for num in range(start_test_num, max_test_num+1, step):
         ## 测试单表单条件更新平均运行时间值
         result = update_one_table_one_filter(
             num=num, average_iteration_num=iteration_num)
