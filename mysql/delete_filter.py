@@ -21,11 +21,13 @@ def delete_multi_filter(num, index=True):
 
     test_session = EngineFactory.create_session_to_test_so(echo=False)
     starttime = datetime.datetime.now()
-    test_session.query(PostsRecord).filter(PostsRecord.score < 20, PostsRecord.view_count < 100).delete()
+    test_session.query(PostsRecord).filter(
+        PostsRecord.score < 20, PostsRecord.view_count < 100).delete()
     test_session.commit()
     endtime = datetime.datetime.now()
     time = (endtime - starttime).total_seconds()
-    print("delete_multi_filter num={num} time={time}".format(num=num, time=time))
+    print("delete_multi_filter num={num} time={time}".format(
+        num=num, time=time))
     if index:
         delete_score_view_count_index()
 
@@ -49,33 +51,36 @@ def delete_multi_filter_repeately(num, repeat_time=1):
         delete_sum_time_without_index = delete_sum_time_without_index + time
         time = delete_multi_filter(num, index=True)
         delete_sum_time_with_index = delete_sum_time_with_index + time
-    return [
-        {
-            "type": "delete_multi-filters",
-            "num": num,
-            "time": delete_sum_time_without_index / repeat_time
-        }, {
-            "type": "delete_multi-filters_index",
-            "num": num,
-            "time": delete_sum_time_with_index / repeat_time
-        }
-
-    ]
+    return [{
+        "type": "delete_multi-filters",
+        "num": num,
+        "time": delete_sum_time_without_index / repeat_time
+    },
+            {
+                "type": "delete_multi-filters_index",
+                "num": num,
+                "time": delete_sum_time_with_index / repeat_time
+            }]
 
 
-def start_test_delete_filter_and_record_result(start_test_num=100, max_test_num=2000, iteration_num=3, step=100):
+def start_test_delete_filter_and_record_result(start_test_num=100,
+                                               max_test_num=2000,
+                                               iteration_num=3,
+                                               step=100):
     result_list = []
-    test_data_point = range(start_test_num, max_test_num + 1, step)
-    for num in test_data_point:
+    # test_data_point = range(start_test_num, max_test_num + 1, step)
+    for num in range(start_test_num, max_test_num, step):
         ## 计算平均运行时间值
-        result = delete_multi_filter_repeately(num=num, repeat_time=iteration_num)
+        result = delete_multi_filter_repeately(
+            num=num, repeat_time=iteration_num)
         result_list.extend(result)
-        output_file_name = "experiment_delete_filter_mysql.json"
-        with open(output_file_name, "w") as f:
-            json.dump(result_list, f)
+        # output_file_name = "experiment_delete_filter_mysql.json"
+        # with open(output_file_name, "w") as f:
+        #     json.dump(result_list, f)
     output_file_name = "experiment_delete_filter_mysql.json"
     with open(output_file_name, "w") as f:
         json.dump(result_list, f)
+
 
 if __name__ == "__main__":
     # start_test_delete_filter_and_record_result(start_test_num=10000,
@@ -83,7 +88,5 @@ if __name__ == "__main__":
     #                                                step=10000,
     #                                                iteration_num=3)
 
-    start_test_delete_filter_and_record_result(start_test_num=100,
-                                               max_test_num=200,
-                                               step=100,
-                                               iteration_num=3)
+    start_test_delete_filter_and_record_result(
+        start_test_num=100, max_test_num=200, step=100, iteration_num=3)

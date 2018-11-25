@@ -234,8 +234,8 @@ def insert_delete_batch_repeatedly(num, repeat_time=1):
 
 def start_test_insert_and_delete_and_record_result(start_test_num=100, max_test_num=2000, iteration_num=3, step=100):
     result_list = []
-    test_data_point = range(start_test_num, max_test_num + 1, step)
-    for num in test_data_point:
+    #test_data_point = range(start_test_num, max_test_num + 1, step)
+    for num in range(start_test_num, max_test_num, step):
         ## 测试批量的插入操作时间
 
         ## 计算平均运行时间值
@@ -246,9 +246,9 @@ def start_test_insert_and_delete_and_record_result(start_test_num=100, max_test_
         result = insert_delete_separate_repeatedly(num=num, repeat_time=iteration_num)
         result_list.extend(result)
 
-        output_file_name = "experiment_insert_delete_mysql.json"
-        with open(output_file_name, "w") as f:
-            json.dump(result_list, f)
+        # output_file_name = "experiment_insert_delete_mysql.json"
+        # with open(output_file_name, "w") as f:
+        #     json.dump(result_list, f)
     output_file_name = "experiment_insert_delete_mysql.json"
     with open(output_file_name, "w") as f:
         json.dump(result_list, f)
