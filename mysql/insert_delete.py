@@ -253,7 +253,7 @@ def start_test_insert_and_delete_and_record_result(start_test_num=100, max_test_
 
 if __name__ == "__main__":
     start_test_insert_and_delete_and_record_result(start_test_num=10000,
-                                                   max_test_num=100000,
+                                                   max_test_num=110000,
                                                    step=10000,
                                                    iteration_num=3)
 
