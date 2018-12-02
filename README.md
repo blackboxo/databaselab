@@ -36,15 +36,15 @@ mysql指定主键/mongodb指定_id 将Posts的数据删除
 2.批量删除 delete_id_batch
 
 
-多条件删除 （已有两组删除，不再额外进行对比）
+3.多条件删除 delete_multi-filters
 
 删除浏览量小于某个值且分数低于20分的所有帖子 
 
 DELETE * FROM Posts WHERE Score<20 and ViewCount<num (测10组：num从1万起递增1万，最后一组为10万) 
 
-3.不建立额外索引 delete_multi-filters
+3.1不建立额外索引 delete_multi-filters_without_index
 
-4.额外索引建立: （ViewCount, Score）delete_multi-filters_index
+3.2额外索引建立: （ViewCount, Score）delete_multi-filters_with_index
 
 
 （在经过插入和删除的测试后，可以明显看到使用索引和批量操作使得数据库的性能更好，因此后续的查询和更新测试我们使用索引和批量测试）
@@ -81,6 +81,15 @@ SELECT SUM(Posts. FavoriteCount), Users. DisplayName, Users. Reputation  FROM Po
 
 额外索引建立: 无
 
+5. 有无索引对比查询 match_index
+
+查询所有浏览量大于某个值并且分数大于20的帖子的标题、分数和浏览量
+
+SELECT Title, Score, Viewcount FROM Posts WHERE Score >20 and ViewCount>num （十组，先试1-10万，不行再改） 
+
+5.1 额外索引建立: 无 match_without_index
+
+5.2 额外索引建立: （ViewCount, Score）match_with_index
 
 ### 更新
 
