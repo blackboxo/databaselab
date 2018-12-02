@@ -36,7 +36,7 @@ mysql指定主键/mongodb指定_id 将Posts的数据删除
 2.批量删除 delete_id_batch
 
 
-多条件删除 
+多条件删除 （已有两组删除，不再额外进行对比）
 
 删除浏览量小于某个值且分数低于20分的所有帖子 
 
@@ -106,7 +106,7 @@ UPDATE Users SET Reputation= Reputation+1 FROM Posts,Users WHERE Users.Id = Post
 
 额外索引建立: 无
 
-4.多表联查多表更新 update_multi-tables_multi-updates：
+4.多表联查多表更新 update_multi-tables_multi-updates（无法实现多表联查多表更新，未跑）：
 
 给每个浏览量大于某个值的帖子的浏览量+1，该作者的声望也+1
 
