@@ -16,7 +16,13 @@
 2. 将tags的数据批量插入数据库，可以将需要插入的条数放入一个数组[5000,10000,50000],
     输入需测试的次数，取平均时间
     已经实现，实现脚本,delete_experiment_factory:
-
+    
+3. 有无索引对比：
+   db.getCollection('posts').delete_many({'Score':{'$lt': 20},{'ViewCount':{'$lt': 10000}}})
+   数量10000~100000,1w递增
+   db.getCollection('posts').ensureIndex({"ViewCount":1,"Score":1},{"name":"mongo_index_name"})
+   db.runCommand({"dropIndexes":"posts","index":"mongo_index_name"}) 
+   
 ### 查询
 
 1.单表单条件查询 match_1-table_1-filter：
@@ -51,6 +57,15 @@ SELECT Posts. Title, Posts.Tags, Posts. FavoriteCount, Users. DisplayName, Users
 SELECT SUM(Posts. FavoriteCount), Users. DisplayName, Users. Reputation  FROM Posts,Users WHERE Users.Id = Posts. OwnerUserId and Users.Id<num (测10组：num从1万起递增1万，最后一组为10万)
 
 额外索引建立: 无
+
+
+5.有无索引对比查询 match_index
+查询所有浏览量大于某个值并且分数大于20的帖子的标题、分数和浏览量
+
+db.getCollection('posts').find({'Score':{'$gt': 20},{'ViewCount':{'$gt': 10000}}})
+数量10000~100000,1w递增
+db.getCollection('posts').ensureIndex({"ViewCount":1,"Score":1},{"name":"mongo_index_name"})
+db.runCommand({"dropIndexes":"posts","index":"mongo_index_name"}) 
 
 ### 更新
 1.单表单条件更新 update_batch：
