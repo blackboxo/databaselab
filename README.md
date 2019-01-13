@@ -27,7 +27,7 @@ mysql不指定主键/mongodb不指定_id 将Posts的数据插入一个新表中
 
 ### 删除
 
-根据ID删除 DELETE * FROM Posts LIMIT num (测10组：num从1万起递增1万，最后一组为10万)
+根据ID删除 DELETE FROM Posts LIMIT num (测10组：num从1万起递增1万，最后一组为10万)
 
 mysql指定主键/mongodb指定_id 将Posts的数据删除
 
@@ -40,7 +40,7 @@ mysql指定主键/mongodb指定_id 将Posts的数据删除
 
 删除浏览量小于某个值且分数低于20分的所有帖子 
 
-DELETE * FROM Posts WHERE Score<20 and ViewCount<num (测10组：num从1万起递增1万，最后一组为10万) 
+DELETE FROM Posts WHERE Score<20 and ViewCount<num (测10组：num从1万起递增1万，最后一组为10万) 
 
 3.1不建立额外索引 delete_multi-filters_without_index
 
